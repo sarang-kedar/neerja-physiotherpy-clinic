@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEERJA PHYSIOTHERPY CLINIC - Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b7ca8;
+            --secondary-color: #52b788;
+            --accent-color: #f4a460;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: var(--dark-text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login Container */
+        .login-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Left Side - Logo */
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-wrapper {
+            text-align: center;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .logo-wrapper img {
+            max-width: 900 px;
+            height: auto;
+            margin-bottom: 40px;
+            filter: brightness(1.04) contrast(1.1) saturate(1.08) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo-title {
+            color: white;
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Right Side - Login Form */
+        .login-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: var(--light-bg);
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .login-form-wrapper {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h2 {
+            color: var(--dark-text);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            color: var(--dark-text);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(59, 124, 168, 0.15);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        /* Remember Me & Forgot Password */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            margin-top: 5px;
+        }
+
+        .form-check {
+            margin: 0;
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .form-check-label {
+            color: var(--dark-text);
+            font-size: 0.9rem;
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .forgot-password-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(59, 124, 168, 0.2);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #2a5a7f 0%, #40956f 100%);
+            box-shadow: 0 4px 12px rgba(59, 124, 168, 0.3);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .divider-text {
+            margin: 0 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Footer Text */
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+            color: var(--secondary-color);
+        }
+
+        /* Alert Messages */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background-color: #ffe5e5;
+            color: #d32f2f;
+        }
+
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .login-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .login-left {
+                min-height: 250px;
+                padding: 30px;
+            }
+
+            .logo-wrapper img {
+                max-width: 300px;
+            }
+
+            .logo-title {
+                font-size: 2rem;
+            }
+
+            .login-right {
+                min-height: 500px;
+                padding: 30px;
+            }
+
+            .login-form-wrapper {
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-left {
+                min-height: 200px;
+                padding: 20px;
+            }
+
+            .logo-wrapper img {
+                max-width: 200px;
+                margin-bottom: 20px;
+            }
+
+            .logo-title {
+                font-size: 1.6rem;
+                margin-bottom: 10px;
+            }
+
+            .logo-subtitle {
+                font-size: 1rem;
+            }
+
+            .login-right {
+                padding: 20px;
+            }
+
+            .login-form-wrapper {
+                max-width: 100%;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-control {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .btn-login {
+                padding: 10px 16px;
+                font-size: 0.95rem;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Logo Section -->
+        <div class="login-left">
+            <div class="logo-wrapper">
+                <img src="/neerjaPhysiotherpyClinic/images/image0.png" alt="NEERJA PHYSIOTHERPY CLINIC" class="logo-img">
+                <h1 class="logo-title">NEERJA</h1>
+                <p class="logo-subtitle">PHYSIOTHERPY CLINIC</p>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form Section -->
+        <div class="login-right">
+            <div class="login-form-wrapper">
+                <!-- Header -->
+                <div class="login-header">
+                    <h2>WELCOME</h2>
+                    <p>Sign in to continue</p>
+                </div>
+
+                <!-- Alert Messages (initially hidden) -->
+                <div id="alertContainer"></div>
+
+                <!-- Login Form -->
+                <form id="loginForm" method="POST" action="/neerjaPhysiotherpyClinic/login">
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="username" 
+                            name="username"
+                            placeholder="Enter your username" 
+                            required 
+                            autocomplete="username">
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="input-group position-relative">
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                name="password"
+                                placeholder="Enter your password" 
+                                required 
+                                autocomplete="current-password">
+                            <button 
+                                type="button" 
+                                class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y"
+                                style="border: none; z-index: 10; background: transparent; color: #999;"
+                                onclick="togglePasswordVisibility()">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Form Options -->
+                    <div class="form-options">
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                id="rememberMe" 
+                                name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="forgot-password-link" onclick="handleForgotPassword(); return false;">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn-login">
+                        <span class="spinner" id="loginSpinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-text">or</div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Footer Text -->
+                <div class="login-footer">
+                    Don't have an account? <a href="#" onclick="handleSignUp(); return false;">Contact Administrator</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Construct API_BASE from current location to handle context path automatically
+        const contextPath = '/neerjaPhysiotherpyClinic';
+        const API_BASE = contextPath + '/api';
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Validation
+            if (!username) {
+                showAlert('Please enter your username', 'danger');
+                document.getElementById('username').focus();
+                return;
+            }
+
+            if (!password) {
+                showAlert('Please enter your password', 'danger');
+                document.getElementById('password').focus();
+                return;
+            }
+
+            if (password.length < 4) {
+                showAlert('Password must be at least 4 characters', 'danger');
+                return;
+            }
+
+            // Show spinner
+            document.getElementById('loginSpinner').style.display = 'inline-block';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+                    method: 'POST'
+                }).then(res => res.json());
+
+                if (response.success) {
+                    // Store user info in session storage
+                    sessionStorage.setItem('user', JSON.stringify(response.data.user));
+                    sessionStorage.setItem('sessionId', response.data.sessionId);
+                    sessionStorage.setItem('contextPath', contextPath);
+
+                    // Show success message and redirect
+                    showAlert('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = contextPath + '/index.html';
+                    }, 1500);
+                } else {
+                    showAlert(response.message || 'Login failed. Please try again.', 'danger');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                showAlert('An error occurred during login. Please try again.', 'danger');
+            } finally {
+                document.getElementById('loginSpinner').style.display = 'none';
+            }
+        });
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const iconClass = type === 'danger' ? 'fa-exclamation-circle' : 
+                            type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="fas ${iconClass}"></i> 
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+
+        // Handle forgot password
+        function handleForgotPassword() {
+            showAlert('Please contact your administrator to reset your password', 'info');
+        }
+
+        // Handle sign up
+        function handleSignUp() {
+            showAlert('Please contact your administrator to create a new account', 'info');
+        }
+
+        // Clear alerts on input focus
+        document.getElementById('username').addEventListener('focus', function() {
+            document.getElementById('alertContainer').innerHTML = '';
+        });
+
+        document.getElementById('password').addEventListener('focus', function() {
+            document.getElementById('alertContainer').innerHTML = '';
+        });
+
+        // Check for login error in URL parameters (if redirected from failed login)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            showAlert('Invalid username or password. Please try again.', 'danger');
+        }
+
+        // Focus on first input
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,3034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEERJA PHYSIOTHERPY CLINIC - Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b7ca8;
+            --secondary-color: #52b788;
+            --accent-color: #f4a460;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+
+        /* Header Styling */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .navbar-brand i {
+            margin-right: 8px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #ffffff;
+            border-right: 2px solid #e0e0e0;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+
+        .sidebar .nav-link {
+            color: var(--dark-text);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #f0f0f0;
+            padding-left: 30px;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            border: none;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a5a7f;
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .btn-success:hover {
+            background-color: #40956f;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Tables */
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge-paid {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .badge-unpaid {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* Forms */
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(59, 124, 168, 0.15);
+        }
+
+        /* Modal */
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                top: 60px;
+                width: 250px;
+                z-index: 999;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+        }
+
+        .success-checkmark {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .header-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            display: block;
+            image-rendering: auto;
+            filter: brightness(1.04) contrast(1.1) saturate(1.08);
+        }
+
+        .header-logo-wrap {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+        }
+
+        /* Custom Badge Colors */
+        .type-clinic {
+            background-color: #3b7ca8;
+        }
+
+        .type-home {
+            background-color: #52b788;
+        }
+
+        .type-online {
+            background-color: #f4a460;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#" onclick="goHome(); return false;">
+                <span class="header-logo-wrap me-2">
+                    <img src="/neerjaPhysiotherpyClinic/images/image0.png" alt="NEERJA PHYSIOTHERPY CLINIC" class="header-logo">
+                </span>
+                <span>NEERJA PHYSIOTHERPY CLINIC</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link text-white" id="currentUsername">User</span>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li id="adminMenuItems" style="display: none;">
+                                <a class="dropdown-item" href="#" onclick="switchSection('userManagement'); return false;">
+                                    <i class="fas fa-users-cog"></i> User Management
+                                </a>
+                            </li>
+                            <li id="adminMenuItems" style="display: none;">
+                                <a class="dropdown-item" href="#" onclick="openChangePasswordModal(); return false;">
+                                    <i class="fas fa-key"></i> Change Password
+                                </a>
+                            </li>
+                            <li id="adminMenuItems" style="display: none;"><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-file-pdf"></i> Reports
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                            <!-- <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#generateReportModal">Generate PDF</a></li> -->
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="switchSection('invoice'); return false;">
+                                    <i class="fas fa-file-invoice"></i> Invoice
+                                </a>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="switchSection('medicalCertificate'); return false;">
+                                    <i class="fas fa-file-medical"></i> Medical Certificate
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="switchSection('receipt'); return false;">
+                                    <i class="fas fa-receipt"></i> Receipt
+                                </a>
+                            </li>
+                            </li>
+                           <!--  <li><a class="dropdown-item" href="#auditSection">Audit Trail</a></li> 
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#analyticsModal">Revenue Analytics</a></li> -->
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/neerjaPhysiotherpyClinic/about">
+                            <i class="fas fa-info-circle"></i> About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row" style="min-height: 100vh;">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#homeSection" data-section="home">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#admissionSection" data-section="admission">
+                            <i class="fas fa-user-plus"></i> New Patient
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#patientListSection" data-section="patients">
+                            <i class="fas fa-users"></i> Patients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#treatmentSection" data-section="treatment">
+                            <i class="fas fa-heartbeat"></i> Treatment Sessions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#billingSection" data-section="billing">
+                            <i class="fas fa-file-invoice-dollar"></i> Billing & Payments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#auditSection" data-section="audit">
+                            <i class="fas fa-chart-line"></i> Audit & Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#invoiceSection" data-section="invoice">
+                            <i class="fas fa-file-invoice"></i> Invoices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#receiptSection" data-section="receipt">
+                            <i class="fas fa-receipt"></i> Receipts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#medicalCertificateSection" data-section="medicalCertificate">
+                            <i class="fas fa-file-medical"></i> Medical Certificate
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10" style="padding: 30px;">
+                <!-- Home Section -->
+                <div id="homeSection" class="section-content" style="display: block;">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h2 class="mb-4">
+                                <i class="fas fa-lotus" style="color: var(--primary-color);"></i>
+                                NEERJA PHYSIOTHERPY CLINIC - Management Dashboard
+                            </h2>
+                            <p class="text-muted">Healing Through Movement</p>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                <div class="stat-number" id="totalPatientsCount">0</div>
+                                <div class="stat-label">Total Patients</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                                <div class="stat-number" id="totalSessionsCount">0</div>
+                                <div class="stat-label">Total Sessions</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-wallet" style="font-size: 2rem; color: var(--accent-color);"></i>
+                                <div class="stat-number" id="totalRevenueCount">₹0</div>
+                                <div class="stat-label">This Month's Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-credit-card" style="font-size: 2rem; color: #ff6b6b;"></i>
+                                <div class="stat-number" id="pendingAmountCount">₹0</div>
+                                <div class="stat-label">Pending Payments</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <h4 class="mb-3">Quick Actions</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-plus" style="font-size: 2.5rem; color: var(--primary-color);"></i>
+                                    <h5 class="card-title mt-3">Register New Patient</h5>
+                                    <p class="card-text text-muted">Add a new patient to the system</p>
+                                    <button class="btn btn-primary" onclick="switchSection('admission')">Add Patient</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar" style="font-size: 2.5rem; color: var(--secondary-color);"></i>
+                                    <h5 class="card-title mt-3">Record Session</h5>
+                                    <p class="card-text text-muted">Log a new treatment session</p>
+                                    <button class="btn btn-primary" onclick="switchSection('treatment')">Add Session</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admission Section -->
+                <div id="admissionSection" class="section-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Patient Admission Form</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="admissionForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Patient Name *</label>
+                                        <input type="text" class="form-control" id="patientName" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Age *</label>
+                                        <input type="number" class="form-control" id="patientAge" min="1" max="120" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Sex *</label>
+                                        <select class="form-select" id="patientSex" required>
+                                            <option value="">Select</option>
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
+                                            <option value="O">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Weight (kg) *</label>
+                                        <input type="number" class="form-control" id="patientWeight" step="0.1" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Referred By / Surgeon Name</label>
+                                        <input type="text" class="form-control" id="patientReferredBy" placeholder="Doctor or Surgeon Name">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Mobile Number</label>
+                                        <input type="tel" class="form-control" id="patientMobile" maxlength="10" placeholder="10-digit mobile number">
+                                        <div class="form-text text-muted">Indian mobile number starting with 6-9</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Patient Type *</label>
+                                        <select class="form-select" id="patientType" required>
+                                            <option value="">Select Type</option>
+                                            <option value="CLINIC">Clinic Visit</option>
+                                            <option value="HOME">Home Based Physiotherapy</option>
+                                            <option value="ONLINE">Online Consultation</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Admission Date</label>
+                                        <input type="date" class="form-control" id="admissionDate">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Diagnosis</label>
+                                    <textarea class="form-control" id="patientDiagnosis" rows="3"></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Clinical History</label>
+                                    <textarea class="form-control" id="clinicalHistory" rows="3"></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-check"></i> Save Patient
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient List Section -->
+                <div id="patientListSection" class="section-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="mb-0">Patient Directory</h4>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="patientSearchInput" placeholder="Search patients...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="patientTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Age</th>
+                                            <th>Mobile</th>
+                                            <th>Type</th>
+                                            <th>Admission Date</th>
+                                            <th>Sessions</th>
+                                            <th>Actions</th>
+                                            <th>Remaining Payment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment Section -->
+                <div id="treatmentSection" class="section-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Add Treatment Session</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="treatmentForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Select Patient *</label>
+                                        <select class="form-select" id="sessionPatientId" required>
+                                            <option value="">Choose Patient...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Session Date *</label>
+                                        <input type="date" class="form-control" id="sessionDate" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Session Time</label>
+                                        <input type="time" class="form-control" id="sessionTime">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Session Charge (INR) *</label>
+                                        <input type="number" class="form-control" id="sessionCharge" step="0.01" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Therapy Type *</label>
+                                        <input type="text" class="form-control" id="therapyType" placeholder="e.g., Orthopedic Rehab" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Location *</label>
+                                        <select class="form-select" id="sessionLocation" required>
+                                            <option value="">Choose Location...</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-plus"></i> Record Session
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Section -->
+                <div id="billingSection" class="section-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Process Payment</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="billingForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Select Patient *</label>
+                                        <select class="form-select" id="billingPatientId" required>
+                                            <option value="">Choose Patient...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Amount Paid (INR) *</label>
+                                        <input type="number" class="form-control" id="amountPaid" step="0.01" required readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">From Session Date</label>
+                                        <input type="date" class="form-control" id="billingFromDate">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">To Session Date</label>
+                                        <input type="date" class="form-control" id="billingToDate">
+                                    </div>
+                                    <div class="col-md-4 mb-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-outline-primary w-100" id="billingLoadSessionsBtn">Load Sessions</button>
+                                    </div>
+                                </div>
+
+                                <ul class="nav nav-tabs mb-3" id="billingSessionTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="pending-sessions-tab" data-bs-toggle="tab" data-bs-target="#pendingSessionsPane" type="button" role="tab">Pending Sessions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="all-sessions-tab" data-bs-toggle="tab" data-bs-target="#allSessionsPane" type="button" role="tab">All Sessions</button>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content mb-3">
+                                    <div class="tab-pane fade show active" id="pendingSessionsPane" role="tabpanel">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover" id="billingSessionTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>Therapy</th>
+                                                        <th>Location</th>
+                                                        <th>Charge</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="allSessionsPane" role="tabpanel">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover" id="allSessionsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>Therapy</th>
+                                                        <th>Location</th>
+                                                        <th>Charge</th>
+                                                        <th>Paid</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Selected Sessions</label>
+                                        <input type="text" class="form-control" id="selectedSessionCount" value="0" readonly>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Total Amount to be Paid (INR)</label>
+                                        <input type="text" class="form-control" id="totalPayableAmount" value="0.00" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Payment Date *</label>
+                                        <input type="date" class="form-control" id="paymentDate" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Payment Mode *</label>
+                                        <select class="form-select" id="paymentMode" required>
+                                            <option value="">Select Mode</option>
+                                            <option value="CASH">Cash</option>
+                                            <option value="UPI">UPI Transfer</option>
+                                            <option value="CHEQUE">Cheque</option>
+                                            <option value="RTGS">RTGS</option>
+                                            <option value="NEFT">NEFT</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <div id="auditFieldsContainer" style="display: none;">
+                                            <div id="upiFields" style="display: none;">
+                                                <label class="form-label">UPI Transaction ID</label>
+                                                <input type="text" class="form-control" id="transactionId" placeholder="e.g., UPI123456789">
+                                            </div>
+
+                                            <div id="chequeFields" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Cheque Number</label>
+                                                        <input type="text" class="form-control" id="chequeNumber">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Bank Name</label>
+                                                        <input type="text" class="form-control" id="bankName">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="bankTransferFields" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">UTR Number</label>
+                                                        <input type="text" class="form-control" id="utrNumber">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Bank Name</label>
+                                                        <input type="text" class="form-control" id="bankNameTransfer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea class="form-control" id="paymentRemarks" rows="2"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save"></i> Record Payment
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Section -->
+                <div id="auditSection" class="section-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h4>Revenue Analytics & Audit Trail</h4>
+                            <hr>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-calendar-day" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                <div class="stat-number" id="dailyRevenue">₹0</div>
+                                <div class="stat-label">Today's Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                                <div class="stat-number" id="weeklyRevenue">₹0</div>
+                                <div class="stat-label">Weekly Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-chart-bar" style="font-size: 2rem; color: var(--accent-color);"></i>
+                                <div class="stat-number" id="monthlyRevenue">₹0</div>
+                                <div class="stat-label">Monthly Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-chart-pie" style="font-size: 2rem; color: #ff6b6b;"></i>
+                                <div class="stat-number" id="yearlyRevenue">₹0</div>
+                                <div class="stat-label">Yearly Revenue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Payment Audit Trail</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="auditTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Mode</th>
+                                                    <th>Reference ID</th>
+                                                    <th>Sessions Count</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== INVOICE SECTION ========== -->
+                <div id="invoiceSection" class="section-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h3><i class="fas fa-file-invoice" style="color: var(--primary-color);"></i> Generate Invoice</h3>
+                            <p class="text-muted">Reports &rarr; Invoice</p>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Generation Form -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle"></i> New Invoice</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="invoiceForm">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Patient *</label>
+                                        <select class="form-select" id="invoicePatientId" required>
+                                            <option value="">Select Patient...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Invoice Date *</label>
+                                        <input type="date" class="form-control" id="invoiceDate" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="invoiceFromDate" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">To Date *</label>
+                                        <input type="date" class="form-control" id="invoiceToDate" required>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-file-pdf"></i> Generate &amp; Save Invoice
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- PDF Preview -->
+                    <div id="invoicePdfPreview" style="display:none;" class="mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-eye"></i> Invoice Preview</h5>
+                                <div id="invoicePreviewMeta" class="text-white small"></div>
+                            </div>
+                            <div class="card-body p-0">
+                                <iframe id="invoicePdfFrame" style="width:100%; height:750px; border:none;"
+                                    title="Invoice PDF Preview"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Saved Invoices Table -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-list"></i> Saved Invoices</h5>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAllInvoices()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="invoicesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Invoice No.</th>
+                                            <th>Invoice Date</th>
+                                            <th>Patient</th>
+                                            <th>Period</th>
+                                            <th>Total (₹)</th>
+                                            <th>Paid (₹)</th>
+                                            <th>Balance (₹)</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoicesTableBody">
+                                        <tr><td colspan="9" class="text-center text-muted">No invoices yet</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========== END INVOICE SECTION ========== -->
+
+                <!-- ========== MEDICAL CERTIFICATE SECTION ========== -->
+                <div id="medicalCertificateSection" class="section-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h3><i class="fas fa-file-medical"></i> Generate Medical Certificate</h3>
+                            <p class="text-muted">Reports &rarr; Medical Certificate</p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle"></i> New Medical Certificate</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="mcForm">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Patient *</label>
+                                        <select class="form-select" id="mcPatientId" required>
+                                            <option value="">Select Patient...</option>
+                                        </select>
+                                    </div>
+                                                    <!-- Treatment and Payment fields removed as per requirement -->
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Medical Certificate Date *</label>
+                                        <input type="date" class="form-control" id="mcInvoiceDate" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="mcFromDate" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">To Date *</label>
+                                        <input type="date" class="form-control" id="mcToDate" required>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-file-pdf"></i> Generate &amp; Save Certificate
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="mcPdfPreview" style="display:none;" class="mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-eye"></i> Certificate Preview</h5>
+                                <div id="mcPreviewMeta" class="text-muted small"></div>
+                            </div>
+                            <div class="card-body p-0">
+                                <iframe id="mcPdfFrame" style="width:100%; height:750px; border:none;" title="Medical Certificate Preview"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-list"></i> Saved Certificates</h5>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAllMedicalCertificates()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="medicalCertificatesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Invoice No.</th>
+                                            <th>Invoice Date</th>
+                                            <th>Patient</th>
+                                            <th>Period</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="medicalCertificatesTableBody">
+                                        <tr><td colspan="6" class="text-center text-muted">No certificates yet</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========== END MEDICAL CERTIFICATE SECTION ========== -->
+
+                <!-- ========== RECEIPT SECTION ========== -->
+                <div id="receiptSection" class="section-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h3><i class="fas fa-receipt"></i> Generate Receipt</h3>
+                            <p class="text-muted">Reports &rarr; Generate Report &rarr; Receipt</p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle"></i> New Receipt</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="receiptForm">
+                                <div class="row">
+                                    <div class="col-md-5 mb-3">
+                                        <label class="form-label">Patient *</label>
+                                        <select class="form-select" id="receiptPatientId" required>
+                                            <option value="">Select Patient...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-7 mb-3">
+                                        <label class="form-label">Receipt Date *</label>
+                                        <input type="date" class="form-control" id="receiptDate" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="receiptFromDate" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">To Date *</label>
+                                        <input type="date" class="form-control" id="receiptToDate" required>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label class="form-label">No. of Sessions</label>
+                                        <input type="number" class="form-control" id="receiptSessionCount" step="1" min="0">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label class="form-label">Rate per Session (₹) *</label>
+                                        <input type="number" class="form-control" id="receiptRate" step="0.01" placeholder="Auto-filled, edit if needed">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Amount Received (₹) *</label>
+                                        <input type="number" class="form-control" id="receiptAmount" step="0.01" required>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-coins"></i> Payments in Selected Period</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover" id="receiptPaymentsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 30px;"><input type="checkbox" id="selectAllPayments"></th>
+                                                        <th>Date</th>
+                                                        <th>Amount (₹)</th>
+                                                        <th>Mode</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="receiptPaymentsBody">
+                                                    <tr><td colspan="4" class="text-center text-muted small">Select patient and dates to view payments</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div id="receiptPaymentsTotal" class="text-end mt-2 fw-bold"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-file-pdf"></i> Generate &amp; Save Receipt
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="receiptPdfPreview" style="display:none;" class="mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-eye"></i> Receipt Preview</h5>
+                                <div id="receiptPreviewMeta" class="text-muted small"></div>
+                            </div>
+                            <div class="card-body p-0">
+                                <iframe id="receiptPdfFrame" style="width:100%; height:750px; border:none;" title="Receipt Preview"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-list"></i> Saved Receipts</h5>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAllReceipts()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="receiptsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Receipt No.</th>
+                                            <th>Receipt Date</th>
+                                            <th>Patient</th>
+                                            <th>Amount (₹)</th>
+                                            <th>Period</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="receiptsTableBody">
+                                        <tr><td colspan="7" class="text-center text-muted">No receipts yet</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========== END RECEIPT SECTION ========== -->
+
+                <!-- ========== USER MANAGEMENT SECTION (SUPER_ADMIN ONLY) ========== -->
+                <div id="userManagementSection" class="section-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h3><i class="fas fa-users-cog"></i> User Management</h3>
+                            <p class="text-muted">Create, manage, and disable users</p>
+                        </div>
+                    </div>
+
+                    <!-- Create User Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-user-plus"></i> Create New User</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="createUserForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" id="newUserFullName" required placeholder="Enter full name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Username *</label>
+                                        <input type="text" class="form-control" id="newUserUsername" required placeholder="Enter username">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Password *</label>
+                                        <input type="password" class="form-control" id="newUserPassword" required placeholder="Enter password">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Role *</label>
+                                        <select class="form-select" id="newUserRole" required>
+                                            <option value="">Select Role...</option>
+                                            <option value="SUPER_ADMIN">Super Admin</option>
+                                            <option value="ADMIN">Admin</option>
+                                            <option value="USER">User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle"></i> Create User
+                                </button>
+                                <div id="createUserAlert" class="alert mt-3" style="display: none;"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- All Users List -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-list"></i> All Users</h5>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAllUsersForAdmin()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="usersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Username</th>
+                                            <th>Full Name</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <tr><td colspan="7" class="text-center text-muted">Loading users...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========== END USER MANAGEMENT SECTION ========== -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Idle Session Warning Modal -->
+    <div class="modal fade" id="idleWarningModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Session Timeout Warning</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Your session is about to expire due to inactivity.</p>
+                    <p><strong>You will be automatically logged out in 1 minute.</strong></p>
+                    <p>Click "Keep Me Logged In" to continue your session.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="keepSessionAlive()">Keep Me Logged In</button>
+                    <button type="button" class="btn btn-danger" onclick="logout()">Logout Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-key"></i> Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Current Password *</label>
+                            <input type="password" class="form-control" id="currentPassword" required placeholder="Enter current password">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password *</label>
+                            <input type="password" class="form-control" id="newPassword" required placeholder="Enter new password">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm New Password *</label>
+                            <input type="password" class="form-control" id="confirmPassword" required placeholder="Confirm new password">
+                        </div>
+                        <div id="changePasswordAlert" class="alert" style="display: none;"></div>
+                        <button type="submit" class="btn btn-primary w-100">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Generation Modal -->
+    <div class="modal fade" id="generateReportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label class="form-label">Report Type *</label>
+                            <select class="form-select" id="reportType" required>
+                                <option value="">Select Report</option>
+                                <option value="session-details">Session Details</option>
+                                <option value="medical-cert">Medical Certificate</option>
+                                <option value="invoice">Invoice</option>
+                                <option value="receipt">Receipt</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Patient *</label>
+                            <select class="form-select" id="reportPatientId" required>
+                                <option value="">Select Patient</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">From Date *</label>
+                                <input type="date" class="form-control" id="reportFromDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">To Date *</label>
+                                <input type="date" class="form-control" id="reportToDate" required>
+                            </div>
+                        </div>
+
+                        <div id="surgeonNameField" style="display: none;" class="mb-3">
+                            <label class="form-label">Surgeon Name (for certificate)</label>
+                            <input type="text" class="form-control" id="surgeonName">
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div class="modal fade" id="analyticsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Revenue Analytics</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="revenueChart"></canvas>
+                    <div id="paymentModeBreakdown" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Edit Modal -->
+    <div class="modal fade" id="editPatientModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Patient</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPatientForm">
+                        <input type="hidden" id="editPatientId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Patient Name *</label>
+                                <input type="text" class="form-control" id="editPatientName" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Age *</label>
+                                <input type="number" class="form-control" id="editPatientAge" min="1" max="120" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Sex *</label>
+                                <select class="form-select" id="editPatientSex" required>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Weight (kg) *</label>
+                                <input type="number" class="form-control" id="editPatientWeight" step="0.1" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Patient Type *</label>
+                                <select class="form-select" id="editPatientType" required>
+                                    <option value="CLINIC">Clinic Visit</option>
+                                    <option value="HOME">Home Based Physiotherapy</option>
+                                    <option value="ONLINE">Online Consultation</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Referred By</label>
+                            <input type="text" class="form-control" id="editPatientReferredBy">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" class="form-control" id="editPatientMobile" maxlength="10" placeholder="10-digit mobile number">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Diagnosis</label>
+                            <textarea class="form-control" id="editPatientDiagnosis" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Clinical History</label>
+                            <textarea class="form-control" id="editPatientClinicalHistory" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Admission Date *</label>
+                            <input type="date" class="form-control" id="editPatientAdmissionDate" required>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Treatment History Modal -->
+    <div class="modal fade" id="treatmentHistoryModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="treatmentHistoryTitle">Treatment History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="treatmentHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Therapy</th>
+                                    <th>Location</th>
+                                    <th>Charge</th>
+                                    <th>Paid</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <button class="btn btn-sm btn-outline-primary" id="treatmentPrevPageBtn" type="button">Previous</button>
+                        <span id="treatmentPageInfo" class="text-muted">Page 1</span>
+                        <button class="btn btn-sm btn-outline-primary" id="treatmentNextPageBtn" type="button">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 NEERJA PHYSIOTHERPY CLINIC. All rights reserved.</p>
+        <p>Contact: 9970045015 | Address: 93 Shree Ram Nagar, Nagpur - 440034</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        // Define context path and API base URL
+        const contextPath = '/neerjaPhysiotherpyClinic';
+        const APP_CONTEXT_PATH = '/neerjaPhysiotherpyClinic';
+        const API_BASE = `${window.location.origin}${APP_CONTEXT_PATH}/api`;
+        
+        // ========== Idle Session Timeout Configuration ==========
+        let idleTimeoutMs = 600000; // Default: 10 minutes (600,000 ms)
+        let warningBeforeLogoutMs = 60000; // Default: 1 minute warning (60,000 ms)
+        let idleTimer = null;
+        let warningTimer = null;
+        let isWarningShown = false;
+
+        // Load session configuration from backend
+        async function loadSessionConfig() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/session-config`).then(r => r.json());
+                if (response.success && response.data) {
+                    idleTimeoutMs = response.data.idleTimeoutMs || 600000;
+                    warningBeforeLogoutMs = response.data.warningBeforeLogoutMs || 60000;
+                    console.log(`Session config loaded: Idle timeout = ${idleTimeoutMs}ms, Warning = ${warningBeforeLogoutMs}ms`);
+                }
+            } catch (err) {
+                console.warn('Could not load session config, using defaults', err);
+            }
+        }
+
+        // Reset idle timer on user activity
+        function resetIdleTimer() {
+            // Clear existing timers
+            if (idleTimer) clearTimeout(idleTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+            isWarningShown = false;
+            
+            // Hide warning modal if shown
+            const warningModal = document.getElementById('idleWarningModal');
+            if (warningModal && isWarningShown) {
+                try {
+                    bootstrap.Modal.getInstance(warningModal)?.hide();
+                } catch (e) {}
+            }
+
+            // Set warning timer (show warning before timeout)
+            const warningTime = idleTimeoutMs - warningBeforeLogoutMs;
+            if (warningTime > 0) {
+                warningTimer = setTimeout(() => {
+                    showIdleWarning();
+                }, warningTime);
+            }
+
+            // Set logout timer
+            idleTimer = setTimeout(() => {
+                autoLogout();
+            }, idleTimeoutMs);
+        }
+
+        // Show idle warning modal
+        function showIdleWarning() {
+            if (!isWarningShown) {
+                isWarningShown = true;
+                const warningModal = document.getElementById('idleWarningModal');
+                if (warningModal) {
+                    new bootstrap.Modal(warningModal).show();
+                    
+                    // Auto hide after warning is shown (in case user dismisses it)
+                    setTimeout(() => {
+                        try {
+                            bootstrap.Modal.getInstance(warningModal)?.hide();
+                        } catch (e) {}
+                    }, warningBeforeLogoutMs - 2000);
+                }
+            }
+        }
+
+        // Auto logout due to inactivity
+        function autoLogout() {
+            console.log('Session expired due to inactivity');
+            sessionStorage.clear();
+            alert('Your session has expired due to inactivity. Please login again.');
+            window.location.href = contextPath + '/login.html';
+        }
+
+        // Keep session alive (called from warning modal)
+        function keepSessionAlive() {
+            console.log('Session activity detected - resetting idle timer');
+            resetIdleTimer();
+            
+            // Hide warning modal
+            const warningModal = document.getElementById('idleWarningModal');
+            if (warningModal) {
+                try {
+                    bootstrap.Modal.getInstance(warningModal)?.hide();
+                } catch (e) {}
+            }
+        }
+
+        // Attach activity listeners
+        document.addEventListener('mousemove', resetIdleTimer);
+        document.addEventListener('mousedown', resetIdleTimer);
+        document.addEventListener('keypress', resetIdleTimer);
+        document.addEventListener('scroll', resetIdleTimer);
+        document.addEventListener('touchstart', resetIdleTimer);
+        window.addEventListener('focus', resetIdleTimer);
+
+        // Remove activity listeners when window loses focus to prevent constant resets
+        window.addEventListener('blur', () => {
+            if (idleTimer) clearTimeout(idleTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+        });
+        
+        // Check user session and role
+        let currentUser = null;
+        function checkAuthAndSetupUI() {
+            const userStr = sessionStorage.getItem('user');
+            const sessionId = sessionStorage.getItem('sessionId');
+            if (!userStr || !sessionId) {
+                window.location.href = contextPath + '/login.html';
+                return;
+            }
+            currentUser = JSON.parse(userStr);
+            console.log('Logged in user:', currentUser);
+
+            // Load session config and start idle timer
+            loadSessionConfig().then(() => {
+                resetIdleTimer();
+            });
+
+            // Hide analytics and audit sections if user role is USER
+            if (currentUser.role !== 'SUPER_ADMIN' && currentUser.role !== 'ADMIN') {
+                setTimeout(() => {
+                    const auditLink = document.querySelector('a[href="#auditTrailSection"]');
+                    const analyticsLink = document.querySelector('a[href="#analyticsModal"]');
+                    if (auditLink?.parentElement) auditLink.parentElement.style.display = 'none';
+                    if (analyticsLink?.parentElement) analyticsLink.parentElement.style.display = 'none';
+                    
+                    const revenueCards = document.querySelectorAll('[data-revenue-card="true"]');
+                    revenueCards.forEach(card => card.style.display = 'none');
+                }, 100);
+            }
+
+            const userDisplay = document.getElementById('currentUsername');
+            if (userDisplay) userDisplay.textContent = currentUser.fullName || currentUser.username;
+        }
+
+        // Check auth on load
+        window.addEventListener('load', checkAuthAndSetupUI);
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('user');
+                sessionStorage.removeItem('sessionId');
+                // Use the controller redirect path (no context path here, controller adds it)
+                window.location.href = '/neerjaPhysiotherpyClinic/login.html';
+            }
+        }
+
+        function goHome() {
+            switchSection('home');
+        }
+        
+        const DEFAULT_SESSION_LOCATIONS = [
+            'Clinic Visit',
+            'Home Based Physiotherapy',
+            'Online Consultation'
+        ];
+        let cachedPatients = [];
+        const treatmentHistoryState = {
+            patientId: null,
+            patientName: '',
+            records: [],
+            page: 1,
+            pageSize: 15
+        };
+        const billingState = {
+            unpaidSessions: [],
+            allSessions: [],
+            selectedSessionIds: new Set()
+        };
+
+        function formatCurrency(amount) {
+            const value = Number(amount || 0);
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(value);
+        }
+
+        function safeJson(response) {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            return response.json();
+        }
+
+        function normalizePatientType(patientType) {
+            const value = String(patientType || '').toUpperCase();
+            if (value.includes('HOME')) return 'HOME';
+            if (value.includes('ONLINE')) return 'ONLINE';
+            return 'CLINIC';
+        }
+
+        function parseDateTimeKey(session) {
+            const datePart = session?.sessionDate || '1970-01-01';
+            const timePart = session?.sessionTime || '00:00:00';
+            return new Date(datePart + 'T' + timePart).getTime();
+        }
+
+        function inDateRange(sessionDate, fromDate, toDate) {
+            if (!sessionDate) return false;
+            if (fromDate && sessionDate < fromDate) return false;
+            if (toDate && sessionDate > toDate) return false;
+            return true;
+        }
+
+        function populateSessionLocationOptions(locations) {
+            const locationSelect = document.getElementById('sessionLocation');
+            if (!locationSelect) return;
+            locationSelect.innerHTML = '<option value="">Choose Location...</option>';
+            const uniqueLocations = [...new Set((locations || []).map(v => String(v || '').trim()).filter(Boolean))];
+            uniqueLocations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+        }
+
+        function getDefaultLocationFromPatientType(patientType) {
+            const type = String(patientType || '').toUpperCase();
+            if (type.includes('HOME')) return 'Home Based Physiotherapy';
+            if (type.includes('ONLINE')) return 'Online Consultation';
+            return 'Clinic Visit';
+        }
+
+        function setTreatmentLocationDefaultForPatient(patientId) {
+            const locationSelect = document.getElementById('sessionLocation');
+            if (!locationSelect) return;
+            const patient = cachedPatients.find(p => String(p.id) === String(patientId));
+            if (!patient) {
+                locationSelect.value = '';
+                return;
+            }
+
+            const defaultLocation = getDefaultLocationFromPatientType(patient.patientType);
+            const existingOption = Array.from(locationSelect.options).find(opt =>
+                String(opt.value || '').toLowerCase() === defaultLocation.toLowerCase());
+
+            if (existingOption) {
+                locationSelect.value = existingOption.value;
+                return;
+            }
+
+            const option = document.createElement('option');
+            option.value = defaultLocation;
+            option.textContent = defaultLocation;
+            locationSelect.appendChild(option);
+            locationSelect.value = defaultLocation;
+        }
+
+        async function loadSessionLocations() {
+            try {
+                const response = await fetch(`${API_BASE}/sessions/locations`).then(safeJson);
+                const dbLocations = Array.isArray(response?.data)
+                    ? response.data.map(v => String(v || '').trim()).filter(Boolean)
+                    : [];
+                populateSessionLocationOptions([...DEFAULT_SESSION_LOCATIONS, ...dbLocations]);
+                const selectedPatientId = document.getElementById('sessionPatientId')?.value;
+                if (selectedPatientId) {
+                    setTreatmentLocationDefaultForPatient(selectedPatientId);
+                }
+            } catch (error) {
+                console.error('Error loading session locations:', error);
+                populateSessionLocationOptions(DEFAULT_SESSION_LOCATIONS);
+                const selectedPatientId = document.getElementById('sessionPatientId')?.value;
+                if (selectedPatientId) {
+                    setTreatmentLocationDefaultForPatient(selectedPatientId);
+                }
+            }
+        }
+
+        function renderBillingUnpaidTable() {
+            const tbody = document.querySelector('#billingSessionTable tbody');
+            if (!tbody) return;
+            if (!billingState.unpaidSessions.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No unpaid sessions found in selected date range</td></tr>';
+                updateSelectedBillingTotals();
+                return;
+            }
+            tbody.innerHTML = billingState.unpaidSessions.map(s => {
+                const checked = billingState.selectedSessionIds.has(String(s.id)) ? 'checked' : '';
+                return `
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input billing-session-check" data-session-id="${s.id}" ${checked}></td>
+                        <td>${s.sessionDate || '-'}</td>
+                        <td>${s.sessionTime || '-'}</td>
+                        <td>${s.therapyDescription || '-'}</td>
+                        <td>${s.location || '-'}</td>
+                        <td>${formatCurrency(s.sessionCharge || 0)}</td>
+                    </tr>`;
+            }).join('');
+
+            document.querySelectorAll('.billing-session-check').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const id = String(this.getAttribute('data-session-id'));
+                    if (this.checked) {
+                        billingState.selectedSessionIds.add(id);
+                    } else {
+                        billingState.selectedSessionIds.delete(id);
+                    }
+                    updateSelectedBillingTotals();
+                });
+            });
+            updateSelectedBillingTotals();
+        }
+
+        function renderAllSessionsTable() {
+            const tbody = document.querySelector('#allSessionsTable tbody');
+            if (!tbody) return;
+            if (!billingState.allSessions.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No sessions found in selected date range</td></tr>';
+                return;
+            }
+            tbody.innerHTML = billingState.allSessions.map(s => `
+                <tr>
+                    <td>${s.sessionDate || '-'}</td>
+                    <td>${s.sessionTime || '-'}</td>
+                    <td>${s.therapyDescription || '-'}</td>
+                    <td>${s.location || '-'}</td>
+                    <td>${formatCurrency(s.sessionCharge || 0)}</td>
+                    <td>${s.isPaid ? '<i class="fas fa-check text-success"></i>' : '<span class="badge badge-unpaid">Unpaid</span>'}</td>
+                </tr>`).join('');
+        }
+
+        function updateSelectedBillingTotals() {
+            const selectedSessions = billingState.unpaidSessions.filter(s => billingState.selectedSessionIds.has(String(s.id)));
+            const total = selectedSessions.reduce((sum, s) => sum + Number(s.sessionCharge || 0), 0);
+            document.getElementById('selectedSessionCount').value = String(selectedSessions.length);
+            document.getElementById('totalPayableAmount').value = total.toFixed(2);
+            document.getElementById('amountPaid').value = total.toFixed(2);
+        }
+
+        async function loadBillingSessions() {
+            const patientId = document.getElementById('billingPatientId').value;
+            if (!patientId) {
+                return;
+            }
+            const fromDate = document.getElementById('billingFromDate').value;
+            const toDate = document.getElementById('billingToDate').value;
+            try {
+                const [allRes, unpaidRes] = await Promise.all([
+                    fetch(`${API_BASE}/sessions/patient/${patientId}`).then(safeJson),
+                    fetch(`${API_BASE}/sessions/patient/${patientId}/unpaid`).then(safeJson)
+                ]);
+
+                const allSessionsRaw = Array.isArray(allRes?.data) ? allRes.data : [];
+                const unpaidSessionsRaw = Array.isArray(unpaidRes?.data) ? unpaidRes.data : [];
+
+                billingState.allSessions = allSessionsRaw
+                    .filter(s => inDateRange(s.sessionDate, fromDate, toDate))
+                    .sort((a, b) => parseDateTimeKey(b) - parseDateTimeKey(a));
+                billingState.unpaidSessions = unpaidSessionsRaw
+                    .filter(s => inDateRange(s.sessionDate, fromDate, toDate))
+                    .sort((a, b) => parseDateTimeKey(b) - parseDateTimeKey(a));
+
+                const unpaidIds = new Set(billingState.unpaidSessions.map(s => String(s.id)));
+                billingState.selectedSessionIds = new Set([...billingState.selectedSessionIds].filter(id => unpaidIds.has(id)));
+
+                renderBillingUnpaidTable();
+                renderAllSessionsTable();
+            } catch (err) {
+                console.error('Error loading billing sessions:', err);
+                billingState.allSessions = [];
+                billingState.unpaidSessions = [];
+                billingState.selectedSessionIds = new Set();
+                renderBillingUnpaidTable();
+                renderAllSessionsTable();
+            }
+        }
+
+        // Section Navigation
+        function switchSection(sectionName, clickedLink) {
+            document.querySelectorAll('.section-content').forEach(el => el.style.display = 'none');
+            const sectionIdMap = {
+                patients: 'patientListSection'
+            };
+            const targetSectionId = sectionIdMap[sectionName] || (sectionName + 'Section');
+            const targetSection = document.getElementById(targetSectionId);
+            if (!targetSection) {
+                console.error('Section not found:', targetSectionId);
+                return;
+            }
+            targetSection.style.display = 'block';
+
+            if (sectionName === 'patients') {
+                loadPatients();
+            }
+            if (sectionName === 'invoice') {
+                loadInvoiceFormData();
+                loadAllInvoices();
+            }
+            if (sectionName === 'medicalCertificate') {
+                loadMedicalCertificateFormData();
+                loadAllMedicalCertificates();
+            }
+            if (sectionName === 'receipt') {
+                loadReceiptFormData();
+                loadAllReceipts();
+            }
+            
+            document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
+            const activeLink = clickedLink || document.querySelector('.sidebar .nav-link[data-section="' + sectionName + '"]');
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Navigation listeners
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('data-section');
+                switchSection(section, this);
+            });
+        });
+
+        // Set today's date as default
+        document.getElementById('admissionDate').valueAsDate = new Date();
+        document.getElementById('sessionDate').valueAsDate = new Date();
+        document.getElementById('paymentDate').valueAsDate = new Date();
+        document.getElementById('reportFromDate').valueAsDate = new Date(new Date().setDate(new Date().getDate() - 30));
+        document.getElementById('reportToDate').valueAsDate = new Date();
+
+        // Load patients on page load
+        function loadPatients() {
+            fetch(`${API_BASE}/patients?page=0&size=100`)
+                .then(safeJson)
+                .then(data => {
+                    if (data && data.success) {
+                        const payload = data.data;
+                        const patients = Array.isArray(payload)
+                            ? payload
+                            : (Array.isArray(payload?.content)
+                                ? payload.content
+                                : (Array.isArray(payload?.patients) ? payload.patients : []));
+                        cachedPatients = patients;
+                        const selects = ['sessionPatientId', 'billingPatientId', 'reportPatientId', 'invoicePatientId', 'mcPatientId', 'receiptPatientId'];
+                        selects.forEach(selectId => {
+                            const select = document.getElementById(selectId);
+                            select.innerHTML = '<option value="">Choose Patient...</option>';
+                            patients.forEach(p => {
+                                const option = document.createElement('option');
+                                option.value = p.id;
+                                option.textContent = p.name || '-';
+                                select.appendChild(option);
+                            });
+                        });
+
+                        renderPatientTable(patients);
+                        updateDashboard(patients);
+                        const selectedPatientId = document.getElementById('sessionPatientId')?.value;
+                        if (selectedPatientId) {
+                            setTreatmentLocationDefaultForPatient(selectedPatientId);
+                        }
+                    } else {
+                        renderPatientTable([]);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading patients:', err);
+                    const tableBody = document.querySelector('#patientTable tbody');
+                    if (tableBody) {
+                        tableBody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Unable to load patients</td></tr>';
+                    }
+                });
+        }
+
+        function renderPatientTable(patients) {
+            const tableBody = document.querySelector('#patientTable tbody');
+            if (!tableBody) {
+                return;
+            }
+            if (!patients || patients.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No patients found</td></tr>';
+                return;
+            }
+            tableBody.innerHTML = patients.map(p => {
+                const typeCss = (p.patientType || '').toLowerCase().includes('home') ? 'type-home'
+                    : (p.patientType || '').toLowerCase().includes('online') ? 'type-online'
+                    : 'type-clinic';
+                return `
+                    <tr>
+                        <td>${p.name || '-'}</td>
+                        <td>${p.age ?? '-'}</td>
+                        <td>${p.mobileNumber || '-'}</td>
+                        <td><span class="badge ${typeCss}">${p.patientType || '-'}</span></td>
+                        <td>${p.admissionDate || '-'}</td>
+                        <td>${p.totalSessions ?? 0}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="openTreatmentHistory(${p.id}, '${(p.name || '').replace(/'/g, "\\'")}')">View</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="openEditPatientModal(${p.id})">Edit</button>
+                        </td>
+                        <td>${formatCurrency(p.totalUnpaidAmount || 0)}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function openEditPatientModal(patientId) {
+            const patient = cachedPatients.find(p => Number(p.id) === Number(patientId));
+            if (!patient) {
+                alert('Patient not found');
+                return;
+            }
+            document.getElementById('editPatientId').value = patient.id;
+            document.getElementById('editPatientName').value = patient.name || '';
+            document.getElementById('editPatientAge').value = patient.age || '';
+            document.getElementById('editPatientSex').value = patient.sex || 'M';
+            document.getElementById('editPatientWeight').value = patient.weight || '';
+            document.getElementById('editPatientType').value = normalizePatientType(patient.patientType);
+            document.getElementById('editPatientReferredBy').value = patient.referredBy || '';
+            document.getElementById('editPatientMobile').value = patient.mobileNumber || '';
+            document.getElementById('editPatientDiagnosis').value = patient.diagnosis || '';
+            document.getElementById('editPatientClinicalHistory').value = patient.clinicalHistory || '';
+            document.getElementById('editPatientAdmissionDate').value = patient.admissionDate || '';
+            new bootstrap.Modal(document.getElementById('editPatientModal')).show();
+        }
+
+        async function openTreatmentHistory(patientId, patientName) {
+            treatmentHistoryState.patientId = patientId;
+            treatmentHistoryState.patientName = patientName || ('Patient #' + patientId);
+            treatmentHistoryState.page = 1;
+            document.getElementById('treatmentHistoryTitle').textContent = `Treatment History - ${treatmentHistoryState.patientName}`;
+            try {
+                const response = await fetch(`${API_BASE}/sessions/patient/${patientId}`).then(safeJson);
+                const sessions = Array.isArray(response?.data) ? response.data : [];
+                treatmentHistoryState.records = sessions.sort((a, b) => parseDateTimeKey(b) - parseDateTimeKey(a));
+                renderTreatmentHistoryPage();
+            } catch (error) {
+                console.error('Error loading treatment history:', error);
+                treatmentHistoryState.records = [];
+                renderTreatmentHistoryPage();
+            }
+            new bootstrap.Modal(document.getElementById('treatmentHistoryModal')).show();
+        }
+
+        function renderTreatmentHistoryPage() {
+            const tbody = document.querySelector('#treatmentHistoryTable tbody');
+            const pageInfo = document.getElementById('treatmentPageInfo');
+            const prevBtn = document.getElementById('treatmentPrevPageBtn');
+            const nextBtn = document.getElementById('treatmentNextPageBtn');
+            const total = treatmentHistoryState.records.length;
+            const totalPages = Math.max(1, Math.ceil(total / treatmentHistoryState.pageSize));
+            treatmentHistoryState.page = Math.min(Math.max(1, treatmentHistoryState.page), totalPages);
+
+            const start = (treatmentHistoryState.page - 1) * treatmentHistoryState.pageSize;
+            const pageRows = treatmentHistoryState.records.slice(start, start + treatmentHistoryState.pageSize);
+            if (!pageRows.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No treatment records found</td></tr>';
+            } else {
+                tbody.innerHTML = pageRows.map(row => {
+                    const paidHtml = row.isPaid ? '<i class="fas fa-check text-success"></i>' : '-';
+                    return `
+                        <tr>
+                            <td>${row.sessionDate || '-'}</td>
+                            <td>${row.sessionTime || '-'}</td>
+                            <td>${row.therapyDescription || '-'}</td>
+                            <td>${row.location || '-'}</td>
+                            <td>${formatCurrency(row.sessionCharge || 0)}</td>
+                            <td>${paidHtml}</td>
+                        </tr>`;
+                }).join('');
+            }
+            pageInfo.textContent = `Page ${treatmentHistoryState.page} of ${totalPages}`;
+            prevBtn.disabled = treatmentHistoryState.page <= 1;
+            nextBtn.disabled = treatmentHistoryState.page >= totalPages;
+        }
+
+        // Update dashboard stats
+        function updateDashboard(patients) {
+            document.getElementById('totalPatientsCount').textContent = patients.length;
+            const totalSessions = patients.reduce((sum, p) => sum + Number(p.totalSessions || 0), 0);
+            const pendingAmount = patients.reduce((sum, p) => sum + Number(p.totalUnpaidAmount || 0), 0);
+            document.getElementById('totalSessionsCount').textContent = totalSessions;
+            document.getElementById('pendingAmountCount').textContent = formatCurrency(pendingAmount);
+        }
+
+        function loadRevenueAndAudit() {
+            const today = new Date();
+            const toIso = (d) => d.toISOString().split('T')[0];
+            const endDate = toIso(today);
+            
+            // Current week: Monday to Sunday (or Sunday to Saturday based on locale)
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay()); // Sunday of current week
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6); // Saturday
+            const weekStartDate = toIso(weekStart);
+            const weekEndDate = toIso(weekEnd);
+            
+            // Current month: 1st to last day
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const monthStartDate = toIso(monthStart);
+            const monthEndDate = toIso(monthEnd);
+            
+            // Current year
+            const yearMonth = endDate.substring(0, 7);
+            const year = today.getFullYear();
+            
+            // For audit trail, use last 30 days
+            const auditStart = new Date(today);
+            auditStart.setDate(auditStart.getDate() - 30);
+            const auditStartDate = toIso(auditStart);
+
+            Promise.all([
+                fetch(`${API_BASE}/payments/revenue/daily?date=${endDate}`).then(safeJson),
+                fetch(`${API_BASE}/payments/revenue/weekly?startDate=${weekStartDate}&endDate=${weekEndDate}`).then(safeJson),
+                fetch(`${API_BASE}/payments/revenue/monthly?yearMonth=${yearMonth}`).then(safeJson),
+                fetch(`${API_BASE}/payments/revenue/yearly?year=${year}`).then(safeJson),
+                fetch(`${API_BASE}/payments/audit-trail?startDate=${auditStartDate}&endDate=${endDate}`).then(safeJson)
+            ]).then(([dailyRes, weeklyRes, monthlyRes, yearlyRes, auditRes]) => {
+                const daily = Number(dailyRes?.data || 0);
+                const weeklyMap = weeklyRes?.data || {};
+                const weekly = Object.values(weeklyMap).reduce((sum, v) => sum + Number(v || 0), 0);
+                const monthly = Number(monthlyRes?.data || 0);
+                const yearly = Number(yearlyRes?.data || 0);
+                document.getElementById('dailyRevenue').textContent = formatCurrency(daily);
+                document.getElementById('weeklyRevenue').textContent = formatCurrency(weekly);
+                document.getElementById('monthlyRevenue').textContent = formatCurrency(monthly);
+                document.getElementById('yearlyRevenue').textContent = formatCurrency(yearly);
+                document.getElementById('totalRevenueCount').textContent = formatCurrency(monthly);
+
+                const auditRows = Array.isArray(auditRes?.data) ? auditRes.data : [];
+                const auditBody = document.querySelector('#auditTable tbody');
+                if (auditBody) {
+                    if (auditRows.length === 0) {
+                        auditBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No payment records found</td></tr>';
+                    } else {
+                        auditBody.innerHTML = auditRows.map(row => `
+                            <tr>
+                                <td>${row.paymentDate || '-'}</td>
+                                <td>${formatCurrency(row.amountPaid || 0)}</td>
+                                <td>${row.paymentMode || '-'}</td>
+                                <td>${row.referenceNumber || row.transactionId || row.chequeNumber || row.utrNumber || '-'}</td>
+                                <td>${row.sessionCount ?? 0}</td>
+                                <td><span class="badge badge-paid">Paid</span></td>
+                            </tr>`).join('');
+                    }
+                }
+            }).catch(err => {
+                console.error('Error loading analytics/audit:', err);
+            });
+        }
+
+        // Admission Form Submit
+        document.getElementById('admissionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const patientData = {
+                name: document.getElementById('patientName').value,
+                age: parseInt(document.getElementById('patientAge').value),
+                sex: document.getElementById('patientSex').value,
+                weight: parseFloat(document.getElementById('patientWeight').value),
+                referredBy: document.getElementById('patientReferredBy').value,
+                mobileNumber: document.getElementById('patientMobile').value || null,
+                diagnosis: document.getElementById('patientDiagnosis').value,
+                clinicalHistory: document.getElementById('clinicalHistory').value,
+                patientType: document.getElementById('patientType').value,
+                admissionDate: document.getElementById('admissionDate').value
+            };
+
+            fetch(`${API_BASE}/patients`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(patientData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Patient registered successfully!');
+                    this.reset();
+                    loadPatients();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Failed to register patient');
+            });
+        });
+
+        // Treatment Form Submit
+        document.getElementById('treatmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const sessionLocation = document.getElementById('sessionLocation').value;
+            if (!sessionLocation) {
+                alert('Please select session location');
+                return;
+            }
+
+            const sessionData = {
+                patient: { id: document.getElementById('sessionPatientId').value },
+                sessionDate: document.getElementById('sessionDate').value,
+                sessionTime: document.getElementById('sessionTime').value,
+                therapyDescription: document.getElementById('therapyType').value,
+                location: sessionLocation,
+                sessionCharge: parseFloat(document.getElementById('sessionCharge').value)
+            };
+
+            fetch(`${API_BASE}/sessions`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sessionData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Session recorded successfully!');
+                    this.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Failed to record session');
+            });
+        });
+
+        document.getElementById('sessionPatientId').addEventListener('change', function() {
+            setTreatmentLocationDefaultForPatient(this.value);
+        });
+
+        // Payment Mode Change - Show relevant audit fields
+        document.getElementById('paymentMode').addEventListener('change', function() {
+            const mode = this.value;
+            document.getElementById('auditFieldsContainer').style.display = mode ? 'block' : 'none';
+            document.getElementById('upiFields').style.display = mode === 'UPI' ? 'block' : 'none';
+            document.getElementById('chequeFields').style.display = mode === 'CHEQUE' ? 'block' : 'none';
+            document.getElementById('bankTransferFields').style.display = ['RTGS', 'NEFT'].includes(mode) ? 'block' : 'none';
+        });
+
+        document.getElementById('billingPatientId').addEventListener('change', function() {
+            billingState.selectedSessionIds = new Set();
+            loadBillingSessions();
+        });
+
+        document.getElementById('billingLoadSessionsBtn').addEventListener('click', function() {
+            billingState.selectedSessionIds = new Set();
+            loadBillingSessions();
+        });
+
+        // Billing Form Submit
+        document.getElementById('billingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const patientId = document.getElementById('billingPatientId').value;
+                const paymentMode = document.getElementById('paymentMode').value;
+                if (!patientId || !paymentMode) {
+                    alert('Please select patient and payment mode');
+                    return;
+                }
+
+                const selectedSessionIds = Array.from(billingState.selectedSessionIds);
+                if (!selectedSessionIds.length) {
+                    alert('Please select at least one treatment session for payment');
+                    return;
+                }
+
+                const params = selectedSessionIds.map(id => 'sessionIds=' + encodeURIComponent(id)).join('&');
+                const paymentData = {
+                    amountPaid: parseFloat(document.getElementById('amountPaid').value),
+                    paymentDate: document.getElementById('paymentDate').value,
+                    paymentMode: paymentMode,
+                    transactionId: document.getElementById('transactionId').value,
+                    chequeNumber: document.getElementById('chequeNumber').value,
+                    bankName: document.getElementById('bankName').value || document.getElementById('bankNameTransfer').value,
+                    utrNumber: document.getElementById('utrNumber').value,
+                    remarks: document.getElementById('paymentRemarks').value
+                };
+
+                const createResp = await fetch(`${API_BASE}/payments?${params}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                }).then(safeJson);
+
+                if (createResp && createResp.success) {
+                    alert('Payment recorded successfully!');
+                    this.reset();
+                    document.getElementById('auditFieldsContainer').style.display = 'none';
+                    billingState.selectedSessionIds = new Set();
+                    loadPatients();
+                    await loadBillingSessions();
+                    loadRevenueAndAudit();
+                } else {
+                    alert('Error: ' + (createResp?.message || 'Unable to record payment'));
+                }
+            } catch (err) {
+                console.error('Payment error:', err);
+                alert('Failed to record payment');
+            }
+        });
+
+        // Patient search filter
+        document.getElementById('patientSearchInput').addEventListener('input', function() {
+            const term = (this.value || '').toLowerCase().trim();
+            if (!term) {
+                renderPatientTable(cachedPatients);
+                return;
+            }
+            const filtered = cachedPatients.filter(p =>
+                (p.name || '').toLowerCase().includes(term) ||
+                String(p.id || '').includes(term) ||
+                (p.mobileNumber || '').includes(term) ||
+                (p.patientType || '').toLowerCase().includes(term));
+            renderPatientTable(filtered);
+        });
+
+        document.getElementById('editPatientForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('editPatientId').value;
+            const payload = {
+                name: document.getElementById('editPatientName').value,
+                age: parseInt(document.getElementById('editPatientAge').value, 10),
+                sex: document.getElementById('editPatientSex').value,
+                weight: parseFloat(document.getElementById('editPatientWeight').value),
+                referredBy: document.getElementById('editPatientReferredBy').value,
+                mobileNumber: document.getElementById('editPatientMobile').value || null,
+                diagnosis: document.getElementById('editPatientDiagnosis').value,
+                clinicalHistory: document.getElementById('editPatientClinicalHistory').value,
+                patientType: document.getElementById('editPatientType').value,
+                admissionDate: document.getElementById('editPatientAdmissionDate').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(safeJson);
+
+                if (response && response.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('editPatientModal')).hide();
+                    loadPatients();
+                    alert('Patient updated successfully');
+                } else {
+                    alert('Error: ' + (response?.message || 'Unable to update patient'));
+                }
+            } catch (error) {
+                console.error('Update patient error:', error);
+                alert('Failed to update patient');
+            }
+        });
+
+        document.getElementById('treatmentPrevPageBtn').addEventListener('click', function() {
+            treatmentHistoryState.page -= 1;
+            renderTreatmentHistoryPage();
+        });
+
+        document.getElementById('treatmentNextPageBtn').addEventListener('click', function() {
+            treatmentHistoryState.page += 1;
+            renderTreatmentHistoryPage();
+        });
+
+        // Report Form - Show surgeon field for certificates
+        document.getElementById('reportType').addEventListener('change', function() {
+            document.getElementById('surgeonNameField').style.display = this.value === 'medical-cert' ? 'block' : 'none';
+        });
+
+        // Report Form Submit
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const reportType = document.getElementById('reportType').value;
+            const patientId = document.getElementById('reportPatientId').value;
+            const fromDate = document.getElementById('reportFromDate').value;
+            const toDate = document.getElementById('reportToDate').value;
+
+            let url = `${API_BASE}/reports/pdf`;
+            
+            switch(reportType) {
+                case 'session-details':
+                    url += `/session-details?patientId=${patientId}`;
+                    break;
+                case 'medical-cert':
+                    const surgeon = document.getElementById('surgeonName').value || '';
+                    // use 'toDate' as the certificate date when generating from the modal
+                    url += `/medical-certificate?patientId=${patientId}&startDate=${fromDate}&endDate=${toDate}&certificateDate=${toDate}&surgeonName=${surgeon}`;
+                    break;
+                case 'invoice':
+                    url += `/invoice?patientId=${patientId}&startDate=${fromDate}&endDate=${toDate}`;
+                    break;
+                case 'receipt':
+                    url += `/receipt?patientId=${patientId}&startDate=${fromDate}&endDate=${toDate}&amountReceived=0`;
+                    break;
+            }
+
+            window.open(url, '_blank');
+            bootstrap.Modal.getInstance(document.getElementById('generateReportModal')).hide();
+        });
+
+        // ============ UTILITY FUNCTIONS ============
+        
+        // Format number with commas
+        function formatNum(num) {
+            if (!num) return '0.00';
+            return parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        
+        // Safe JSON parsing
+        async function safeJson(response) {
+            try {
+                return await response.json();
+            } catch (err) {
+                console.error('JSON parse error:', err);
+                return { success: false, message: 'Invalid response format' };
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const toIso = (d) => d.toISOString().split('T')[0];
+            document.getElementById('billingFromDate').value = toIso(thirtyDaysAgo);
+            document.getElementById('billingToDate').value = toIso(today);
+            // Invoice date defaults
+            document.getElementById('invoiceDate').valueAsDate = today;
+            document.getElementById('invoiceFromDate').value = toIso(thirtyDaysAgo);
+            document.getElementById('invoiceToDate').value = toIso(today);
+            // Medical Certificate defaults
+            if (document.getElementById('mcInvoiceDate')) document.getElementById('mcInvoiceDate').valueAsDate = today;
+            if (document.getElementById('mcFromDate')) document.getElementById('mcFromDate').value = toIso(thirtyDaysAgo);
+            if (document.getElementById('mcToDate')) document.getElementById('mcToDate').value = toIso(today);
+            // Receipt defaults
+            if (document.getElementById('receiptDate')) document.getElementById('receiptDate').valueAsDate = today;
+            if (document.getElementById('receiptFromDate')) document.getElementById('receiptFromDate').value = toIso(thirtyDaysAgo);
+            if (document.getElementById('receiptToDate')) document.getElementById('receiptToDate').value = toIso(today);
+            loadSessionLocations();
+            loadPatients();
+            loadRevenueAndAudit();
+        });
+
+        // ============ INVOICE SECTION LOGIC ============
+
+        async function loadInvoiceFormData() {
+            try {
+                const resp = await fetch(`${API_BASE}/invoices/form-data`).then(safeJson);
+                if (resp && resp.success) {
+                    const data = resp.data || {};
+                    const patients = Array.isArray(data.patients) ? data.patients : [];
+
+                    const psel = document.getElementById('invoicePatientId');
+                    psel.innerHTML = '<option value="">Select Patient...</option>';
+                    patients.forEach(p => {
+                        const opt = document.createElement('option'); opt.value = p.id; opt.textContent = p.name || '-'; psel.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading invoice form data:', err);
+            }
+        }
+
+        function renderInvoicesTable(items) {
+            const tbody = document.getElementById('invoicesTableBody');
+            if (!items || !items.length) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">No invoices found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = items.map((it, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><strong>${it.invoiceNumber || '-'}</strong></td>
+                    <td>${it.invoiceDate || '-'}</td>
+                    <td>${it.patientName || '-'}</td>
+                    <td>${it.fromDate || '-'} to ${it.toDate || '-'}</td>
+                    <td>₹${formatNum(it.totalAmount || 0)}</td>
+                    <td>₹${formatNum(it.amountPaid || 0)}</td>
+                    <td>₹${formatNum((it.totalAmount || 0) - (it.amountPaid || 0))}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewInvoicePdf(${it.id}, '${it.invoiceNumber}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary" href="${API_BASE}/invoices/${it.id}/pdf" target="_blank">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function loadAllInvoices() {
+            try {
+                const resp = await fetch(`${API_BASE}/invoices`).then(safeJson);
+                const invoices = (resp && resp.success && Array.isArray(resp.data)) ? resp.data : [];
+                renderInvoicesTable(invoices);
+            } catch (e) {
+                console.error('Error loading invoices:', e);
+            }
+        }
+
+        async function viewInvoicePdf(id, invoiceNumber) {
+            try {
+                const resp = await fetch(`${API_BASE}/invoices/${id}/pdf`);
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('invoicePdfFrame').src = url;
+                document.getElementById('invoicePreviewMeta').textContent = invoiceNumber;
+                document.getElementById('invoicePdfPreview').style.display = 'block';
+                document.getElementById('invoicePdfPreview').scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                console.error('Failed to load invoice PDF', err);
+                alert('Failed to load PDF');
+            }
+        }
+
+        document.getElementById('invoiceForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('invoicePatientId').value;
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            const fromDate = document.getElementById('invoiceFromDate').value;
+            const toDate = document.getElementById('invoiceToDate').value;
+
+            if (!patientId || !invoiceDate || !fromDate || !toDate) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                const url = `${API_BASE}/invoices/generate?patientId=${encodeURIComponent(patientId)}&invoiceDate=${invoiceDate}&fromDate=${fromDate}&toDate=${toDate}`;
+                const resp = await fetch(url, { method: 'POST' }).then(safeJson);
+                if (resp && resp.success) {
+                    const dto = resp.data;
+                    alert('Invoice generated: ' + dto.invoiceNumber);
+                    await viewInvoicePdf(dto.id, dto.invoiceNumber);
+                    loadAllInvoices();
+                } else {
+                    alert('Error: ' + (resp?.message || 'Unable to generate invoice'));
+                }
+            } catch (err) {
+                console.error('Invoice generation error:', err);
+                alert('Failed to generate invoice');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate &amp; Save Invoice';
+            }
+        });
+
+        // ============ MEDICAL CERTIFICATE SECTION LOGIC ============
+
+        async function loadMedicalCertificateFormData() {
+            try {
+                const resp = await fetch(`${API_BASE}/medical-certificates/form-data`).then(safeJson);
+                if (resp && resp.success) {
+                    const data = resp.data || {};
+                    const patients = Array.isArray(data.patients) ? data.patients : [];
+
+                    const psel = document.getElementById('mcPatientId');
+                    psel.innerHTML = '<option value="">Select Patient...</option>';
+                    patients.forEach(p => {
+                        const opt = document.createElement('option'); opt.value = p.id; opt.textContent = p.name || '-'; psel.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading MC form data:', err);
+            }
+        }
+
+        function renderMedicalCertificatesTable(items) {
+            const tbody = document.getElementById('medicalCertificatesTableBody');
+            if (!items || !items.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No certificates found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = items.map((it, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><strong>${it.invoiceNumber || '-'}</strong></td>
+                    <td>${it.invoiceDate || '-'}</td>
+                    <td>${it.patientId ? (it.patientId) : '-'}</td>
+                    <td>${it.fromDate || '-'} to ${it.toDate || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewMedicalCertificatePdf(${it.id}, '${it.invoiceNumber}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary" href="${API_BASE}/medical-certificates/${it.id}/pdf" target="_blank">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function loadAllMedicalCertificates() {
+            try {
+                const resp = await fetch(`${API_BASE}/medical-certificates`).then(safeJson);
+                const items = (resp && resp.success && Array.isArray(resp.data)) ? resp.data : [];
+                renderMedicalCertificatesTable(items);
+            } catch (err) {
+                console.error('Error loading medical certificates:', err);
+            }
+        }
+
+        async function viewMedicalCertificatePdf(id, invoiceNumber) {
+            try {
+                const resp = await fetch(`${API_BASE}/medical-certificates/${id}/pdf`);
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('mcPdfFrame').src = url;
+                document.getElementById('mcPreviewMeta').textContent = invoiceNumber;
+                document.getElementById('mcPdfPreview').style.display = 'block';
+                document.getElementById('mcPdfPreview').scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                console.error('Failed to load medical certificate PDF', err);
+                alert('Failed to load PDF');
+            }
+        }
+
+        document.getElementById('mcForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('mcPatientId').value;
+            // no treatment/payment correlation required
+            const invoiceDate = document.getElementById('mcInvoiceDate').value;
+            const fromDate = document.getElementById('mcFromDate').value;
+            const toDate = document.getElementById('mcToDate').value;
+
+            if (!patientId || !invoiceDate || !fromDate || !toDate) {
+                alert('Please fill required fields');
+                return;
+            }
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                const url = `${API_BASE}/medical-certificates/generate?patientId=${encodeURIComponent(patientId)}&invoiceDate=${invoiceDate}&fromDate=${fromDate}&toDate=${toDate}`;
+                const resp = await fetch(url, { method: 'POST' }).then(safeJson);
+                if (resp && resp.success) {
+                    const dto = resp.data;
+                    alert('Medical certificate generated: ' + dto.invoiceNumber);
+                    await viewMedicalCertificatePdf(dto.id, dto.invoiceNumber);
+                    loadAllMedicalCertificates();
+                } else {
+                    alert('Error: ' + (resp?.message || 'Unable to generate certificate'));
+                }
+            } catch (err) {
+                console.error('MC generation error:', err);
+                alert('Failed to generate certificate');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate &amp; Save Certificate';
+            }
+        });
+
+        // ============ END MEDICAL CERTIFICATE SECTION LOGIC ============
+
+        // ============ RECEIPT SECTION LOGIC ============
+
+        async function loadReceiptFormData() {
+            try {
+                const resp = await fetch(`${API_BASE}/receipts/form-data`).then(safeJson);
+                if (resp && resp.success) {
+                    const data = resp.data || {};
+                    const patients = Array.isArray(data.patients) ? data.patients : [];
+                    const payments = Array.isArray(data.payments) ? data.payments : [];
+
+                    const psel = document.getElementById('receiptPatientId');
+                    psel.innerHTML = '<option value="">Select Patient...</option>';
+                    patients.forEach(p => {
+                        const opt = document.createElement('option'); opt.value = p.id; opt.textContent = p.name || '-'; psel.appendChild(opt);
+                    });
+
+                    const paysel = document.getElementById('receiptPaymentId');
+                    paysel.innerHTML = '<option value="">Select Payment...</option>';
+                    payments.forEach(p => {
+                        const opt = document.createElement('option'); opt.value = p.id; opt.textContent = `${p.paymentDate || ''} - ₹${p.amountPaid || ''} - ${p.paymentMode || ''}`; paysel.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading receipt form data:', err);
+            }
+        }
+
+        function renderReceiptsTable(items) {
+            const tbody = document.getElementById('receiptsTableBody');
+            if (!items || !items.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No receipts found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = items.map((it, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><strong>${it.receiptNumber || '-'}</strong></td>
+                    <td>${it.receiptDate || '-'}</td>
+                    <td>${it.patientName || '-'}</td>
+                    <td>₹${formatNum(it.amountReceived)}</td>
+                    <td>${it.fromDate || '-'} to ${it.toDate || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewReceiptPdf(${it.id}, '${it.receiptNumber}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary" href="${API_BASE}/receipts/${it.id}/pdf" target="_blank">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function loadAllReceipts() {
+            try {
+                const resp = await fetch(`${API_BASE}/receipts`).then(safeJson);
+                const items = (resp && resp.success && Array.isArray(resp.data)) ? resp.data : [];
+                renderReceiptsTable(items);
+            } catch (err) {
+                console.error('Error loading receipts:', err);
+            }
+        }
+
+        async function viewReceiptPdf(id, receiptNumber) {
+            try {
+                const resp = await fetch(`${API_BASE}/receipts/${id}/pdf`);
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('receiptPdfFrame').src = url;
+                document.getElementById('receiptPreviewMeta').textContent = receiptNumber;
+                document.getElementById('receiptPdfPreview').style.display = 'block';
+                document.getElementById('receiptPdfPreview').scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                console.error('Failed to load receipt PDF', err);
+                alert('Failed to load PDF');
+            }
+        }
+
+        document.getElementById('receiptForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('receiptPatientId').value;
+            const receiptDate = document.getElementById('receiptDate').value;
+            const fromDate = document.getElementById('receiptFromDate').value;
+            const toDate = document.getElementById('receiptToDate').value;
+            const amount = document.getElementById('receiptAmount').value;
+            const sessionCount = document.getElementById('receiptSessionCount').value || 0;
+
+            if (!patientId || !receiptDate || !fromDate || !toDate || !amount) {
+                alert('Please fill required fields');
+                return;
+            }
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                const sessionCount = document.getElementById('receiptSessionCount').value || 0;
+                const url = `${API_BASE}/receipts/generate?patientId=${encodeURIComponent(patientId)}&paymentId=&receiptDate=${receiptDate}&fromDate=${fromDate}&toDate=${toDate}&amountReceived=${encodeURIComponent(amount)}&numberOfSession=${sessionCount}`;
+                const resp = await fetch(url, { method: 'POST' }).then(safeJson);
+                if (resp && resp.success) {
+                    const dto = resp.data;
+                    alert('Receipt generated: ' + dto.receiptNumber);
+                    await viewReceiptPdf(dto.id, dto.receiptNumber);
+                    loadAllReceipts();
+                } else {
+                    alert('Error: ' + (resp?.message || 'Unable to generate receipt'));
+                }
+            } catch (err) {
+                console.error('Receipt generation error:', err);
+                alert('Failed to generate receipt');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate &amp; Save Receipt';
+            }
+        });
+
+        // update calculations when patient or date range changes
+        async function updateReceiptCalculations() {
+            const patientId = document.getElementById('receiptPatientId').value;
+            const fromDate = document.getElementById('receiptFromDate').value;
+            const toDate = document.getElementById('receiptToDate').value;
+            if (!patientId || !fromDate || !toDate) return;
+            try {
+                const resp = await fetch(`${API_BASE}/receipts/calculate?patientId=${encodeURIComponent(patientId)}&fromDate=${fromDate}&toDate=${toDate}`).then(safeJson);
+                if (resp && resp.success) {
+                    const d = resp.data;
+                    const avg = d.avgRate || 0;
+                    const totalCharges = d.totalCharges || 0;
+                    const totalPayments = d.totalPayments || 0;
+                    const sessionCount = d.sessionCount || 0;
+
+                    // populate session count and rate fields (rate is editable)
+                    document.getElementById('receiptSessionCount').value = sessionCount;
+                    const rateField = document.getElementById('receiptRate');
+                    if (!rateField.value || rateField.value === '') {
+                        rateField.value = avg.toFixed(2);
+                    }
+
+                    // set amount received default to totalPayments if >0 else totalCharges
+                    const amountInput = document.getElementById('receiptAmount');
+                    if (Number(amountInput.value) === 0 || amountInput.value === '') {
+                        amountInput.value = (totalPayments > 0 ? totalPayments : totalCharges).toFixed(2);
+                    }
+
+                    // fetch and display payments for this patient in the period
+                    const payResp = await fetch(`${API_BASE}/receipts/payments-by-patient?patientId=${patientId}&fromDate=${fromDate}&toDate=${toDate}`).then(safeJson);
+                    console.log('Payment response:', payResp);
+                    if (payResp && payResp.success && Array.isArray(payResp.data)) {
+                        const payments = payResp.data;
+                        console.log('Payments:', payments);
+                        const tbody = document.getElementById('receiptPaymentsBody');
+                        if (payments.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted small">No payments in this period</td></tr>';
+                            document.getElementById('selectAllPayments').style.display = 'none';
+                        } else {
+                            tbody.innerHTML = payments.map((p, idx) => `
+                                <tr>
+                                    <td><input type="checkbox" class="payment-checkbox" data-payment-id="${p.id}" data-amount="${p.amountPaid}"></td>
+                                    <td>${p.paymentDate || '-'}</td>
+                                    <td>₹${formatNum(p.amountPaid)}</td>
+                                    <td>${p.paymentMode || '-'}</td>
+                                </tr>`).join('');
+                            document.getElementById('selectAllPayments').style.display = 'table-cell';
+                            // Add event listeners to checkboxes
+                            document.querySelectorAll('.payment-checkbox').forEach(cb => {
+                                cb.addEventListener('change', updateReceiptAmountFromCheckboxes);
+                            });
+                            document.getElementById('selectAllPayments').addEventListener('change', function(e) {
+                                document.querySelectorAll('.payment-checkbox').forEach(cb => cb.checked = e.target.checked);
+                                updateReceiptAmountFromCheckboxes();
+                            });
+                        }
+                        const totalDiv = document.getElementById('receiptPaymentsTotal');
+                        totalDiv.textContent = `Total Payments Available: ₹${formatNum(totalPayments)}`;
+                    } else {
+                        console.warn('Payment response not as expected:', payResp);
+                        const tbody = document.getElementById('receiptPaymentsBody');
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted small">Error loading payments</td></tr>';
+                    }
+                }
+            } catch (err) {
+                console.error('Error computing receipt values', err);
+            }
+        }
+
+        // auto-calculate amount received when session count or rate changes
+        function autoCalculateReceiptAmount() {
+            const sessionCount = parseFloat(document.getElementById('receiptSessionCount').value) || 0;
+            const ratePerSession = parseFloat(document.getElementById('receiptRate').value) || 0;
+            const calculated = sessionCount * ratePerSession;
+            document.getElementById('receiptAmount').value = calculated.toFixed(2);
+        }
+
+        // update amount received when checkboxes change
+        function updateReceiptAmountFromCheckboxes() {
+            const checked = document.querySelectorAll('.payment-checkbox:checked');
+            let total = 0;
+            checked.forEach(cb => {
+                total += parseFloat(cb.getAttribute('data-amount') || 0);
+            });
+            // only auto-fill from checkboxes if user hasn't manually edited the field
+            if (checked.length > 0 && !document.getElementById('receiptAmount').dataset.manuallyEdited) {
+                document.getElementById('receiptAmount').value = total.toFixed(2);
+            }
+        }
+
+        // track if amount is manually edited
+        document.getElementById('receiptAmount').addEventListener('change', function() {
+            this.dataset.manuallyEdited = 'true';
+        });
+
+        document.getElementById('receiptSessionCount').addEventListener('change', autoCalculateReceiptAmount);
+        document.getElementById('receiptRate').addEventListener('change', autoCalculateReceiptAmount);
+
+        document.getElementById('receiptPatientId').addEventListener('change', updateReceiptCalculations);
+        document.getElementById('receiptFromDate').addEventListener('change', updateReceiptCalculations);
+        document.getElementById('receiptToDate').addEventListener('change', updateReceiptCalculations);
+
+        // ============ END RECEIPT SECTION LOGIC ============
+
+        // ============ USER MANAGEMENT SECTION LOGIC (SUPER_ADMIN) ============
+
+        function showAdminMenuIfSuperAdmin() {
+            if (currentUser && currentUser.role === 'SUPER_ADMIN') {
+                document.querySelectorAll('#adminMenuItems').forEach(el => el.style.display = 'block');
+            }
+        }
+
+        // Load all users for admin
+        async function loadAllUsersForAdmin() {
+            try {
+                const resp = await fetch(`${contextPath}/api/auth/users?userRole=${currentUser.role}`).then(safeJson);
+                if (resp && resp.success && Array.isArray(resp.data)) {
+                    const users = resp.data;
+                    const tbody = document.getElementById('usersTableBody');
+                    if (users.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No users found</td></tr>';
+                    } else {
+                        tbody.innerHTML = users.map((u, i) => `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td><strong>${u.username}</strong></td>
+                                <td>${u.fullName}</td>
+                                <td><span class="badge bg-info">${u.role}</span></td>
+                                <td><span class="badge ${u.active ? 'bg-success' : 'bg-danger'}">${u.active ? 'Active' : 'Disabled'}</span></td>
+                                <td>${new Date(u.active).toLocaleDateString()}</td>
+                                <td>
+                                    ${u.username !== 'superadmin' ? `<button class="btn btn-sm btn-danger" onclick="disableUserConfirm(${u.id}, '${u.username}')"><i class="fas fa-ban"></i></button>` : '-'}
+                                </td>
+                            </tr>`).join('');
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading users:', err);
+            }
+        }
+
+        // Create new user
+        document.getElementById('createUserForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('newUserFullName').value;
+            const username = document.getElementById('newUserUsername').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+
+            try {
+                const url = `${contextPath}/api/auth/create-user?currentUserRole=${currentUser.role}&username=${encodeURIComponent(username)}&fullName=${encodeURIComponent(fullName)}&password=${encodeURIComponent(password)}&role=${role}`;
+                const resp = await fetch(url, { method: 'POST' }).then(safeJson);
+                
+                const alert = document.getElementById('createUserAlert');
+                if (resp && resp.success) {
+                    alert.className = 'alert alert-success';
+                    alert.textContent = `✓ User '${username}' created successfully!`;
+                    alert.style.display = 'block';
+                    this.reset();
+                    setTimeout(() => {
+                        loadAllUsersForAdmin();
+                        alert.style.display = 'none';
+                    }, 2000);
+                } else {
+                    alert.className = 'alert alert-danger';
+                    alert.textContent = '✗ ' + (resp?.message || 'Error creating user');
+                    alert.style.display = 'block';
+                }
+            } catch (err) {
+                const alert = document.getElementById('createUserAlert');
+                alert.className = 'alert alert-danger';
+                alert.textContent = '✗ Error: ' + err.message;
+                alert.style.display = 'block';
+            }
+        });
+
+        // Disable user
+        function disableUserConfirm(userId, username) {
+            if (confirm(`Are you sure you want to disable user '${username}'?`)) {
+                disableUser(userId);
+            }
+        }
+
+        async function disableUser(userId) {
+            try {
+                const resp = await fetch(`${contextPath}/api/auth/deactivate-user?currentUserRole=${currentUser.role}&userId=${userId}`, { method: 'POST' }).then(safeJson);
+                if (resp && resp.success) {
+                    alert('User disabled successfully');
+                    loadAllUsersForAdmin();
+                } else {
+                    alert('Error: ' + (resp?.message || 'Unable to disable user'));
+                }
+            } catch (err) {
+                alert('Error disabling user: ' + err.message);
+            }
+        }
+
+        // Open change password modal
+        function openChangePasswordModal() {
+            new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+        }
+
+        // Change password form
+        document.getElementById('changePasswordForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const oldPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showPasswordAlert('Passwords do not match!', 'danger');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showPasswordAlert('Password must be at least 6 characters long', 'danger');
+                return;
+            }
+
+            try {
+                const resp = await fetch(`${contextPath}/api/auth/change-password?userId=${currentUser.id}&oldPassword=${encodeURIComponent(oldPassword)}&newPassword=${encodeURIComponent(newPassword)}`, { method: 'POST' }).then(safeJson);
+                
+                if (resp && resp.success) {
+                    showPasswordAlert('✓ Password changed successfully!', 'success');
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+                        this.reset();
+                    }, 1500);
+                } else {
+                    showPasswordAlert('✗ ' + (resp?.message || 'Error changing password'), 'danger');
+                }
+            } catch (err) {
+                showPasswordAlert('✗ Error: ' + err.message, 'danger');
+            }
+        });
+
+        function showPasswordAlert(message, type) {
+            const alert = document.getElementById('changePasswordAlert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+        }
+
+        // Wrap existing switchSection to handle admin menu
+        const originalShowAdminMenu = showAdminMenuIfSuperAdmin;
+        window.addEventListener('load', () => {
+            showAdminMenuIfSuperAdmin();
+        });
+    </script>
+</body>
+</html>
