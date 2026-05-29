@@ -3,12 +3,10 @@ package com.neerjaphysio.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.neerjaphysio.dto.PatientDTO;
 import com.neerjaphysio.exception.ResourceNotFoundException;
 import com.neerjaphysio.model.Patient;
@@ -61,6 +59,7 @@ public class PatientService {
         patient.setClinicalHistory(patientDetails.getClinicalHistory());
         patient.setDiagnosis(patientDetails.getDiagnosis());
         patient.setPatientType(patientDetails.getPatientType());
+        patient.setAdmissionDate(patientDetails.getAdmissionDate());
 
         return patientRepository.save(patient);
     }

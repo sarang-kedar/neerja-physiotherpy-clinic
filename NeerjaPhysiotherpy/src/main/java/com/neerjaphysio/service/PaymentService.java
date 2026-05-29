@@ -21,8 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.neerjaphysio.dto.PaymentDTO;
 import com.neerjaphysio.dto.RevenueAnalyticsDTO;
 import com.neerjaphysio.exception.ResourceNotFoundException;
+import com.neerjaphysio.model.Patient;
 import com.neerjaphysio.model.Payment;
 import com.neerjaphysio.model.TreatmentSession;
+import com.neerjaphysio.repository.PatientRepository;
 import com.neerjaphysio.repository.PaymentRepository;
 import com.neerjaphysio.repository.TreatmentSessionRepository;
 
@@ -32,16 +34,26 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final TreatmentSessionRepository treatmentSessionRepository;
+    private final PatientRepository patientRepository;
 
     public PaymentService(PaymentRepository paymentRepository,
-                          TreatmentSessionRepository treatmentSessionRepository) {
+                          TreatmentSessionRepository treatmentSessionRepository,
+                          PatientRepository patientRepository) {
         this.paymentRepository = paymentRepository;
         this.treatmentSessionRepository = treatmentSessionRepository;
+        this.patientRepository = patientRepository;
     }
 
     public Payment createPayment(Payment payment, List<Long> sessionIds) {
         if (payment.getPaymentDate() == null) {
             payment.setPaymentDate(LocalDate.now());
+        }
+
+        // Fetch and set the patient from the payment object if patientId is provided
+        if (payment.getPatient() != null && payment.getPatient().getId() != null) {
+            Patient patient = patientRepository.findById(payment.getPatient().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", payment.getPatient().getId()));
+            payment.setPatient(patient);
         }
 
         // Save the payment first

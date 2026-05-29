@@ -518,7 +518,7 @@ public class PDFGenerationService {
     body.add("Received with thanks from ");
     body.add(patient.getName() != null ? patient.getName() : "").setFontSize(9);
     body.add(",\n");
-    body.add("a sum of ₹ ");
+    body.add("a sum of Rs. ");
     body.add(amountReceived != null ? String.format("%.2f", amountReceived) : "__________")
         .setFontSize(9);
     body.add("  (Rupees ");
@@ -549,7 +549,7 @@ public class PDFGenerationService {
         endDate != null ? endDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) : "__________")
         .setFontSize(9);
     body.add(",\n");
-    body.add("at the rate of INR ");
+    body.add("at the rate of Rs. ");
     body.add(numberOfSession > 0
         ? String.format("%.2f", amountReceived != null ? amountReceived / numberOfSession : 0.0)
         : "__________").setFontSize(9);
@@ -560,7 +560,7 @@ public class PDFGenerationService {
     cell.add(body);
 
     // Total amount
-    cell.add(new Paragraph("Total Amount Received: ₹ "
+    cell.add(new Paragraph("Total Amount Received: Rs. "
         + (amountReceived != null ? String.format("%.2f", amountReceived) : "")).setFontSize(9)
             .setMarginBottom(12));
 

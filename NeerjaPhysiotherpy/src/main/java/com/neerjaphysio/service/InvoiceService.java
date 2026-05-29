@@ -140,7 +140,7 @@ public class InvoiceService {
   }
 
   // ═════════════════════════════════════════════════════════════════════════
-  // PDF Construction – matches the image exactly
+  // PDF Construction – paginated with max 15 sessions per page
   // ═════════════════════════════════════════════════════════════════════════
 
   private byte[] buildInvoicePDF(String invoiceNumber, LocalDate invoiceDate, Patient patient,
@@ -154,39 +154,56 @@ public class InvoiceService {
 
     float pageW = PageSize.A4.getWidth(); // 595 pt
 
-    // ── 1. Top blue bar ────────────────────────────────────────────────
-    document.add(colorBar(pageW, 8f, ACCENT));
+    // Paginate sessions - max 25 per page
+    int sessionsPerPage = 28;
+    int totalPages = (int) Math.ceil((double) sessions.size() / sessionsPerPage);
 
-    // ── 2. Header (logo | clinic name / doctor info) ──────────────────
-    document.add(buildHeader(pageW));
+    for (int pageNum = 0; pageNum < totalPages; pageNum++) {
+      // Calculate session range for this page
+      int startIdx = pageNum * sessionsPerPage;
+      int endIdx = Math.min(startIdx + sessionsPerPage, sessions.size());
+      List<TreatmentSession> pageSessiones = sessions.subList(startIdx, endIdx);
 
-    // ── 3. Bottom-of-header blue bar ──────────────────────────────────
-    document.add(colorBar(pageW, 4f, ACCENT));
+      // ── 1. Top blue bar ────────────────────────────────────────────────
+      document.add(colorBar(pageW, 8f, ACCENT));
 
-    // ── 4. Body: sidebar | invoice content ────────────────────────────
-    float sidebarW = 140f;
-    float contentW = pageW - sidebarW;
+      // ── 2. Header (logo | clinic name / doctor info) ──────────────────
+      document.add(buildHeader(pageW));
 
-    Table body = new Table(new float[] {sidebarW, contentW})
-        .setWidth(UnitValue.createPointValue(pageW)).setFixedLayout();
+      // ── 3. Bottom-of-header blue bar ──────────────────────────────────
+      document.add(colorBar(pageW, 4f, ACCENT));
 
-    // Left – sidebar
-    Cell sidebarCell = new Cell().setBackgroundColor(SIDEBAR_BG).setBorder(Border.NO_BORDER)
-        .setPadding(10).setVerticalAlignment(VerticalAlignment.TOP);
-    buildSidebar(sidebarCell);
-    body.addCell(sidebarCell);
+      // ── 4. Body: sidebar | invoice content ────────────────────────────
+      float sidebarW = 140f;
+      float contentW = pageW - sidebarW;
 
-    // Right – invoice content
-    Cell contentCell = new Cell().setBorder(Border.NO_BORDER).setPadding(12)
-        .setVerticalAlignment(VerticalAlignment.TOP);
-    buildContent(contentCell, invoiceNumber, invoiceDate, patient, sessions, payments, fromDate,
-        toDate, totalAmount, amountPaid, balanceDue, contentW - 24);
-    body.addCell(contentCell);
+      Table body = new Table(new float[] {sidebarW, contentW})
+          .setWidth(UnitValue.createPointValue(pageW)).setFixedLayout();
 
-    document.add(body);
+      // Left – sidebar
+      Cell sidebarCell = new Cell().setBackgroundColor(SIDEBAR_BG).setBorder(Border.NO_BORDER)
+          .setPadding(10).setVerticalAlignment(VerticalAlignment.TOP);
+      buildSidebar(sidebarCell);
+      body.addCell(sidebarCell);
 
-    // ── 5. Footer ─────────────────────────────────────────────────────
-    document.add(buildFooter(pageW));
+      // Right – invoice content for this page
+      Cell contentCell = new Cell().setBorder(Border.NO_BORDER).setPadding(12)
+          .setVerticalAlignment(VerticalAlignment.TOP);
+      buildContent(contentCell, invoiceNumber, invoiceDate, patient, pageSessiones, payments,
+          fromDate, toDate, totalAmount, amountPaid, balanceDue, contentW - 24, pageNum + 1,
+          totalPages);
+      body.addCell(contentCell);
+
+      document.add(body);
+
+      // ── 5. Footer ─────────────────────────────────────────────────────
+      document.add(buildFooter(pageW, invoiceDate));
+
+      // Add page break if not last page
+      if (pageNum < totalPages - 1) {
+        document.add(new Paragraph("").setMarginTop(8));
+      }
+    }
 
     document.close();
     return baos.toByteArray();
@@ -236,7 +253,7 @@ public class InvoiceService {
   // ─── Right invoice content ───────────────────────────────────────────────
   private void buildContent(Cell cell, String invoiceNumber, LocalDate invoiceDate, Patient patient,
       List<TreatmentSession> sessions, List<Payment> payments, LocalDate fromDate, LocalDate toDate,
-      double totalAmount, double amountPaid, double balanceDue, float availW) {
+      double totalAmount, double amountPaid, double balanceDue, float availW, int pageNum, int totalPages) {
 
     // Title
     cell.add(new Paragraph("INVOICE").setBold().setFontSize(16)
@@ -288,88 +305,95 @@ public class InvoiceService {
       svcTable.addCell(svcData(String.format("%.2f", charge)));
     }
 
-    // Grand Total row
-    svcTable.addCell(new Cell(1, 4)
-        .add(new Paragraph("Grand Total INR").setFontSize(9).setTextAlignment(TextAlignment.CENTER))
-        .setBorder(new SolidBorder(ColorConstants.BLACK, 0.5f)).setPadding(3));
-    svcTable
-        .addCell(new Cell().add(new Paragraph(String.format("%.2f", totalAmount)).setFontSize(9))
-            .setBorder(new SolidBorder(ColorConstants.BLACK, 0.5f)).setPadding(3));
+    // Grand Total row - ONLY on last page
+    if (pageNum == totalPages) {
+      svcTable.addCell(new Cell(1, 4)
+          .add(new Paragraph("Grand Total Rs.").setFontSize(9).setTextAlignment(TextAlignment.CENTER))
+          .setBorder(new SolidBorder(ColorConstants.BLACK, 0.5f)).setPadding(3));
+      svcTable
+          .addCell(new Cell().add(new Paragraph(String.format("%.2f", totalAmount)).setFontSize(9))
+              .setBorder(new SolidBorder(ColorConstants.BLACK, 0.5f)).setPadding(3));
+    }
     cell.add(svcTable);
 
-    cell.add(new Paragraph("").setMarginBottom(6));
+    // Add empty space for proper page alignment
+    cell.add(new Paragraph("").setMarginBottom(0));
 
-    // ── Payment Details ────────────────────────────────────────────────
-    cell.add(new Paragraph("Payment Details:").setFontSize(9).setMarginBottom(3));
+    // ── Payment Details (ONLY on last page) ────────────────────────────────────────────────
+    if (pageNum == totalPages) {  // Last page only
+      cell.add(new Paragraph("Payment Details:").setFontSize(9).setMarginBottom(3));
 
-    // Line 1: Received a sum of ₹ X Rupees in Words Y (using GRAND TOTAL)
-    String totalAmtStr = String.format("%.2f", totalAmount);
-    String totalAmtWords =
-        totalAmount > 0 ? rupeesToWords(totalAmount) : "___________________________";
-    cell.add(para().add(txt("Received a sum of \u20B9 ")).add(totalAmtStr)
-        .add(txt("  Rupees in Words (")).add(totalAmtWords).add(txt(")")).setFontSize(9)
-        .setMarginBottom(3));
+      // Line 1: Received a sum of ₹ X Rupees in Words Y (using GRAND TOTAL)
+      String totalAmtStr = String.format("%.2f", totalAmount);
+      String totalAmtWords =
+          totalAmount > 0 ? rupeesToWords(totalAmount) : "___________________________";
+      cell.add(para().add(txt("Received a sum of Rs. ")).add(totalAmtStr)
+          .add(txt("  Rupees in Words (")).add(totalAmtWords).add(txt(")")).setFontSize(9)
+          .setMarginBottom(3));
 
-    // Line 2: from <patient name>
-    cell.add(underlinedField("from  ", patient.getName()));
+      // Line 2: from <patient name>
+      cell.add(underlinedField("from  ", patient.getName()));
 
-    // Line 3: All payment methods (unique only)
-    if (!payments.isEmpty()) {
-      // Collect unique payment methods using LinkedHashSet to maintain order
-      Set<String> uniquePaymentModes = new LinkedHashSet<>();
-      for (Payment p : payments) {
-        if (p.getPaymentMode() != null) {
-          uniquePaymentModes.add(p.getPaymentMode().getDisplayName());
-        }
-      }
-
-      Paragraph viaPara = para().add(txt("via ")).setFontSize(9);
-      if (!uniquePaymentModes.isEmpty()) {
-        String modesStr = String.join(" + ", uniquePaymentModes);
-        viaPara.add(bold(modesStr));
-      }
-
-      // Show all payment references
-      StringBuilder allRefs = new StringBuilder();
-      for (Payment p : payments) {
-        if (p.getPaymentMode() != null) {
-          String ref = getPaymentRef(p);
-          if (!ref.equals("_______________") && !ref.isEmpty()) {
-            if (allRefs.length() > 0)
-              allRefs.append(" | ");
-            allRefs.append(ref);
+      // Line 3: All payment methods (unique only)
+      if (!payments.isEmpty()) {
+        // Collect unique payment methods using LinkedHashSet to maintain order
+        Set<String> uniquePaymentModes = new LinkedHashSet<>();
+        for (Payment p : payments) {
+          if (p.getPaymentMode() != null) {
+            uniquePaymentModes.add(p.getPaymentMode().getDisplayName());
           }
         }
+
+        Paragraph viaPara = para().add(txt("via ")).setFontSize(9);
+        if (!uniquePaymentModes.isEmpty()) {
+          String modesStr = String.join(" + ", uniquePaymentModes);
+          viaPara.add((modesStr));
+        }
+
+        // Show all payment references
+        StringBuilder allRefs = new StringBuilder();
+        for (Payment p : payments) {
+          if (p.getPaymentMode() != null) {
+            String ref = getPaymentRef(p);
+            if (!ref.equals("_______________") && !ref.isEmpty()) {
+              if (allRefs.length() > 0)
+                allRefs.append(" | ");
+              allRefs.append(ref);
+            }
+          }
+        }
+
+        if (allRefs.length() > 0) {
+          viaPara.add(txt("  (Ref: ")).add((allRefs.toString())).add(txt(")"));
+        }
+        viaPara.setMarginBottom(3);
+        cell.add(viaPara);
+      } else {
+        // No payments yet
+        Paragraph viaPara =
+            para().add(txt("via ")).add(txt("_______________")).setFontSize(9).setMarginBottom(3);
+        cell.add(viaPara);
       }
 
-      if (allRefs.length() > 0) {
-        viaPara.add(txt("  (Ref: ")).add(bold(allRefs.toString())).add(txt(")"));
-      }
-      viaPara.setMarginBottom(3);
-      cell.add(viaPara);
-    } else {
-      // No payments yet
-      Paragraph viaPara =
-          para().add(txt("via ")).add(txt("_______________")).setFontSize(9).setMarginBottom(3);
-      cell.add(viaPara);
+      // Line 4: on <date>
+      cell.add(para().add(txt("on ")).add(txt(invoiceDate.format(DATE_FMT))).add(txt("."))
+          .setFontSize(9).setMarginBottom(12));
     }
 
-    // Line 4: on <date>
-    cell.add(para().add(txt("on ")).add(txt(invoiceDate.format(DATE_FMT))).add(txt("."))
-        .setFontSize(9).setMarginBottom(12));
-
-    // Signature row: Date left | Doctor name right
-    Table sigRow = new Table(new float[] {availW / 2f, availW / 2f})
-        .setWidth(UnitValue.createPercentValue(100));
-    sigRow.addCell(noBorderCell(
-        para().add(bold("Date: ")).add(txt(invoiceDate.format(DATE_FMT))).setFontSize(9)));
-    sigRow.addCell(noBorderCell(
-        para(SIG_NAME).setBold().setFontSize(9).setTextAlignment(TextAlignment.RIGHT)));
-    cell.add(sigRow);
+    // Signature row: Date left | Doctor name right (show on last page only)
+    if (pageNum == totalPages) {
+      Table sigRow = new Table(new float[] {availW / 2f, availW / 2f})
+          .setWidth(UnitValue.createPercentValue(100));
+      sigRow.addCell(noBorderCell(
+          para().add(("Date: ")).add(txt(invoiceDate.format(DATE_FMT))).setFontSize(9)));
+      sigRow.addCell(noBorderCell(
+          para(SIG_NAME).setBold().setFontSize(9).setTextAlignment(TextAlignment.RIGHT)));
+      cell.add(sigRow);
+    }
   }
 
   // ─── Footer bar ───────────────────────────────────────────────────────────
-  private Table buildFooter(float pageW) {
+  private Table buildFooter(float pageW, LocalDate invoiceDate) {
     Table footer = new Table(new float[] {pageW}).setWidth(UnitValue.createPointValue(pageW))
         .setFixedLayout().setMarginTop(6);
 
@@ -407,7 +431,7 @@ public class InvoiceService {
 
   private Cell svcHdr(String text) {
     return new Cell()
-        .add(new Paragraph(text).setBold().setFontSize(8).setTextAlignment(TextAlignment.CENTER))
+        .add(new Paragraph(text).setFontSize(8).setTextAlignment(TextAlignment.CENTER))
         .setBorder(new SolidBorder(ColorConstants.BLACK, 0.5f)).setPadding(3);
   }
 

@@ -2282,7 +2282,10 @@
                     chequeNumber: document.getElementById('chequeNumber').value,
                     bankName: document.getElementById('bankName').value || document.getElementById('bankNameTransfer').value,
                     utrNumber: document.getElementById('utrNumber').value,
-                    remarks: document.getElementById('paymentRemarks').value
+                    remarks: document.getElementById('paymentRemarks').value,
+                    patient: {
+                        id: parseInt(patientId)
+                    }
                 };
 
                 const createResp = await fetch(`${API_BASE}/payments?${params}`, {

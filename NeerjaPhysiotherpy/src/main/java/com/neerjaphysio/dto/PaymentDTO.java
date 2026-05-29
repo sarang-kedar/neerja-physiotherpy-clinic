@@ -19,6 +19,7 @@ public class PaymentDTO {
     private String remarks;
     private Integer sessionCount;
     private String auditDetails;
+    private Long patientId;
 
     public PaymentDTO() {
 				
@@ -26,7 +27,7 @@ public class PaymentDTO {
 
 	public PaymentDTO(Long id, Double amountPaid, LocalDate paymentDate, String paymentMode, String transactionId,
 			String chequeNumber, String bankName, String utrNumber, String referenceNumber, String remarks,
-			Integer sessionCount, String auditDetails) {
+			Integer sessionCount, String auditDetails, Long patientId) {
 		super();
 		this.id = id;
 		this.amountPaid = amountPaid;
@@ -40,6 +41,7 @@ public class PaymentDTO {
 		this.remarks = remarks;
 		this.sessionCount = sessionCount;
 		this.auditDetails = auditDetails;
+		this.patientId = patientId;
 	}
 
 	public Long getId() {
@@ -138,6 +140,14 @@ public class PaymentDTO {
 		this.auditDetails = auditDetails;
 	}
 
+	public Long getPatientId() {
+		return patientId;
+	}
+
+	public void setPatientId(Long patientId) {
+		this.patientId = patientId;
+	}
+
 	// Builder Method
     public static Builder builder() {
         return new Builder();
@@ -211,6 +221,11 @@ public class PaymentDTO {
             return this;
         }
 
+        public Builder patientId(Long patientId) {
+            dto.patientId = patientId;
+            return this;
+        }
+
         public PaymentDTO build() {
             return dto;
         }
@@ -232,12 +247,13 @@ public class PaymentDTO {
 				// Avoid initializing lazy treatmentSessions collection here to prevent LazyInitializationException
 				.sessionCount(null)
 				.auditDetails(payment.getAuditDetails())
+				.patientId(payment.getPatient() != null ? payment.getPatient().getId() : null)
                 .build();
     }
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(amountPaid, auditDetails, bankName, chequeNumber, id, paymentDate, paymentMode,
+		return Objects.hash(amountPaid, auditDetails, bankName, chequeNumber, id, patientId, paymentDate, paymentMode,
 				referenceNumber, remarks, sessionCount, transactionId, utrNumber);
 	}
 
@@ -252,8 +268,8 @@ public class PaymentDTO {
 		PaymentDTO other = (PaymentDTO) obj;
 		return Objects.equals(amountPaid, other.amountPaid) && Objects.equals(auditDetails, other.auditDetails)
 				&& Objects.equals(bankName, other.bankName) && Objects.equals(chequeNumber, other.chequeNumber)
-				&& Objects.equals(id, other.id) && Objects.equals(paymentDate, other.paymentDate)
-				&& Objects.equals(paymentMode, other.paymentMode)
+				&& Objects.equals(id, other.id) && Objects.equals(patientId, other.patientId)
+				&& Objects.equals(paymentDate, other.paymentDate) && Objects.equals(paymentMode, other.paymentMode)
 				&& Objects.equals(referenceNumber, other.referenceNumber) && Objects.equals(remarks, other.remarks)
 				&& Objects.equals(sessionCount, other.sessionCount)
 				&& Objects.equals(transactionId, other.transactionId) && Objects.equals(utrNumber, other.utrNumber);
@@ -264,7 +280,8 @@ public class PaymentDTO {
 		return "PaymentDTO [id=" + id + ", amountPaid=" + amountPaid + ", paymentDate=" + paymentDate + ", paymentMode="
 				+ paymentMode + ", transactionId=" + transactionId + ", chequeNumber=" + chequeNumber + ", bankName="
 				+ bankName + ", utrNumber=" + utrNumber + ", referenceNumber=" + referenceNumber + ", remarks="
-				+ remarks + ", sessionCount=" + sessionCount + ", auditDetails=" + auditDetails + "]";
+				+ remarks + ", sessionCount=" + sessionCount + ", auditDetails=" + auditDetails + ", patientId="
+				+ patientId + "]";
 	}
     
     
